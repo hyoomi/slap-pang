@@ -5,7 +5,7 @@ using UnityEngine;
 public class TesMove : MonoBehaviour
 {
 
-    public float moveSpeed = 10f;
+    public float moveSpeed = 3f;
     Vector2 moveVec;
 
     //[SerializeField]
@@ -13,13 +13,13 @@ public class TesMove : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //moveVec = Vector2.zero;
+        moveVec = Vector2.zero;
     }
+
     void Start()
     {
         rigid = gameObject.GetComponent<Rigidbody2D>();
         moveVec = Vector2.zero;
-
     }
 
     void Update()
