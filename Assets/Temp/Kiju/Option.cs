@@ -10,10 +10,18 @@ public class Option : MonoBehaviour
     public GameObject panel;
     public AudioMixer master;
     public Slider slider;
+    private float lastVolume;
     
     public void Panel_Set(){
         toggle = !toggle;
         panel.SetActive(toggle);
+        lastVolume = slider.value;
+    }
+
+    public void Panel_Set_No_Save(){
+        toggle = !toggle;
+        panel.SetActive(toggle);
+        slider.value = lastVolume;
     }
 
     public void Sound_Control(){
