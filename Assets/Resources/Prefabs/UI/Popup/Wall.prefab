@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9732334, b: 0.8915094, a: 1}
+  m_Color: {r: 1, g: 0.96132547, b: 0.7688679, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -721,7 +721,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 6200000, guid: 91e624890cab0304d871bac5e17caf80, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 805369362325489686, guid: b625d8b96ce267941853cdba61473493,
         type: 3}
       propertyPath: m_Interpolate
@@ -841,7 +841,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 6200000, guid: 91e624890cab0304d871bac5e17caf80, type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b625d8b96ce267941853cdba61473493, type: 3}
 --- !u!224 &2131279549111389247 stripped

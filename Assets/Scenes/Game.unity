@@ -396,4 +396,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiComponentPrefabs:
   - {fileID: 7094314904099451513, guid: dc72535936d104f44b364659d23a590e, type: 3}
+  - {fileID: 1549820566537353501, guid: 72d6aa425921c1347b7daf720670c8ae, type: 3}
+  - {fileID: 7273054511330017502, guid: e0bd52e1ade99a940b123203f838909c, type: 3}
   - {fileID: 646422104625656167, guid: 7dc18b3f189f7e14598f3c21e81078f6, type: 3}
