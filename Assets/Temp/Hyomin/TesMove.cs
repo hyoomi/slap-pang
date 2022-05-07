@@ -13,6 +13,7 @@ public class TesMove : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(this.gameObject.name +" "+ collision.gameObject.name);
         moveVec = Vector2.zero;
     }
 
@@ -22,12 +23,28 @@ public class TesMove : MonoBehaviour
         moveVec = Vector2.zero;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            moveVec.y = 0;
             moveVec.x = -moveSpeed;
+        }            
         else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            moveVec.y = 0;
             moveVec.x = moveSpeed;
+        }           
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            moveVec.x = 0;
+            moveVec.y = moveSpeed;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            moveVec.x = 0;
+            moveVec.y = -moveSpeed;
+        }
 
         rigid.velocity = moveVec;
     }

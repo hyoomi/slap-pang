@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 모든 Manager를 포함하는 Managers. 
-// Manager를 control하기위해 이 싱글톤 객체를 사용할 것.
+// Manager를 사용하기위해 이 싱글톤 객체를 사용할 것.
+// ex) Managers.Sound.Play()
 public class Managers : MonoBehaviour
 {
     static Managers s_instance; // 유일성이 보장된다
@@ -13,12 +14,12 @@ public class Managers : MonoBehaviour
     DataManager _data = new DataManager();
     SceneManager _scene = new SceneManager();
     SoundManager _sound = new SoundManager();
-    //UIManager _ui = new UIManager();
+    UIManager _ui = new UIManager();
 
     public static DataManager Data { get { return Instance._data; } }
     public static SceneManager Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
-    //public static UIManager UI { get { return Instance._ui; } }
+    public static UIManager UI { get { return Instance._ui; } }
     #endregion
 
     void Start()
@@ -49,6 +50,5 @@ public class Managers : MonoBehaviour
     {
         Sound.Clear();
         Scene.Clear();
-        //UI.Clear();
     }
 }

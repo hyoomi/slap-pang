@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// enum을 모아놓은 class. ex) Define.Scene
 public class Define
 {
     public enum Scene

@@ -10,5 +10,8 @@ public class LobbyScene : BaseScene
 
         SceneType = Define.Scene.Lobby;
 
+        Debug.Log(Managers.Scene.GetSceneName(SceneType));
+        //Managers.UI.LoadUI<PopupUI>("GameUI");      
+        //Managers.UI.LoadUI<PopupUI>("StartButton");
     }
 }
