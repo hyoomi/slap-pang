@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PopupUI : BaseUI
 {
+    // 해당 팝업을 띄운다
     public void ShowPopup()
     {
         GameObject go = this.gameObject;

@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 // 모든 Scene이 상속받을 class
 // 빈 GameObject에 BaseScene을 상속받은 스크립트를 붙여서 사용
+// Scene이 로드된 순간 가장 먼저 UI를 세팅해주는 중요한 녀석
 public class BaseScene : MonoBehaviour
 {
-    // -- get, set을 처음본다면 공부해봅시당
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
 
     [SerializeField] public List<GameObject> uiComponentPrefabs = new List<GameObject>(); // Prefabs를 담아둘 List

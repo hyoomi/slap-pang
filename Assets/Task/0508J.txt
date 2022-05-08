@@ -1,0 +1,16 @@
+05/08 회의
+
+1.Timer.prefab에서 [Gameover]오브젝트 삭제하기
+임시 팝업은 삭제하고 새로운 팝업을 만들 것!
+
+2. GameoverPopup.prefab만들기
+Popup은 [UI>Panel]를 생성한 뒤 자식 오브젝트로 Popup을 만들어주시면 됩니다
+GameoverPopup을 위한 스크립트를 하나 만든 후 PopupUI클래스를 상속받습니다
+[한번 더!] 버튼을 클릭하면 Game 재시작
+[나가기] 버튼을 클릭하면 Popup.prefab 뜨도록 구현(임시 프리펩입니다) 
++ 상속 개념 다시 체크!
+
+3. Timer가 종료되면 만든 GameoverPopup을 띄웁니다
+
+
+

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 7273054511330017499}
   - component: {fileID: 7273054511330017496}
   - component: {fileID: 7273054511330017493}
-  - component: {fileID: 608890282007245930}
   m_Layer: 5
   m_Name: PauseButton
   m_TagString: Untagged
@@ -146,18 +145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPauseText: {fileID: 7273054511457561831}
   Panel: {fileID: 2173093019722528553, guid: e57b8250d7956a14f95abb79b49c946a, type: 3}
---- !u!114 &608890282007245930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7273054511330017502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9eb7b930874722a44b270e961540cea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7273054511457561829
 GameObject:
   m_ObjectHideFlags: 0
