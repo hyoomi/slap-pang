@@ -5,26 +5,25 @@ using UnityEngine;
 
 public class SpaceController : MonoBehaviour
 {
-    const int row = 8;
-    const int col = 10;
-    [SerializeField] GameObject ballPrefab;
-    [SerializeField] public CellController[] allCells;
-    public int[] filled = new int[80];
-    public int ballCount;
-    public Define.SlideAction _slide;
-    public static Action<Define.SlideAction> slideAction;
+    [SerializeField] GameObject ballPrefab; // 공 프리펩
+    [SerializeField] public CellController[] allCells; // 총 80개의 cell
+    public int[] filled = new int[80]; // cell에 공이 들어있으면 1, 없으면 0 (임시변수입니다)
+    public int ballCount; // 공의 총 개수
+    public Define.SlideAction _slide; // 지금 발생중인 슬라이드 행위를 체크
+    public static Action<Define.SlideAction> slideAction; // 슬라이드에 따른 액션 (일단 무시해주세요)
 
     void Start()
     {
         ballCount = 0;
     }
 
+    // 키를 입력받습니다
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) // 스페이스 누르면 공 하나 스폰(임시)
             SpawnBall();
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
         {
             _slide = Define.SlideAction.Up;
             slideAction(_slide);
@@ -54,32 +53,38 @@ public class SpaceController : MonoBehaviour
         }
     }
 
+    // 공을 스폰합니다
     public void SpawnBall()
     {
-        if (ballCount == 80)
+        // Cell이 꽉 찼으니 공을 스폰하지 않습니다
+        if (ballCount >= 80)
         {
             Debug.Log("모든 Cell이 꽉 찼습니다.");
             return;
         }
-        int spawnCell;
 
+        int spawnCell; // 공을 스폰할 Cell index를 받는 변수
+
+        // 비어있는 cell을 찾을 때까지 while문을 돌립니다
         while (true)
         {
-            spawnCell = UnityEngine.Random.Range(0, allCells.Length);
-            if (allCells[spawnCell].ball == null)
+            spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
+            if (allCells[spawnCell].ball == null) // 해당 cell이 비어있다면 while문 탈출
             {
                 break;
             }
         }
 
-        GameObject tempBall = Instantiate(ballPrefab, allCells[spawnCell].transform);
-        BallController tempBallController = tempBall.GetComponent<BallController>();
-        allCells[spawnCell].GetComponent<CellController>().ball = tempBallController;
-        filled[spawnCell] = 1;
-        ballCount++;
-        // 랜덤한 Ball 이미지를 세팅할 것
+        GameObject tempBall = Instantiate(ballPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        BallController tempBallController = tempBall.GetComponent<BallController>(); 
+        allCells[spawnCell].GetComponent<CellController>().ball = tempBallController; // 해당 cell에 방금 만든 ball을 담습니다
+        filled[spawnCell] = 1; // 해당 cell이 찼다는것을 표시해줍니다
+        ballCount++; // 공 개스를 하나 늘립니다
     }    
 
+    // 위로 슬라이드 할 경우
+    // 동작 원리: 가장 위에있는 빈칸을 선택. 그 빈칸의 아래 칸들을 쭉 살피다가 공이 들어있는 칸을 발견하면 그 공을 선택된 빈칸으로 옮겨준다
+    // 빈칸을 위에서부터 아래로 검사해야만 위쪽에 있는 빈칸쪽으로 공을 모을 수 있다.
     public void SlideUp()
     {
         for(int j = 0; j < 80; j++)
@@ -87,13 +92,13 @@ public class SpaceController : MonoBehaviour
             if (filled[j] == 0)
             {
                 int firstBall = FindFirstBall_Up(j);
-                if (firstBall != -1) // 공 발견하면
+                if (firstBall != -1) // 공이 들어있는 Cell의 인덱스를 발견했다면
                 {
                     filled[j] = 1; filled[firstBall] = 0;
-                    allCells[firstBall].ball.transform.SetParent(allCells[j].transform);
-                    allCells[j].ball = allCells[firstBall].ball;
-                    allCells[j].ball.transform.localPosition = Vector3.zero;
-                    allCells[firstBall].ball = null;
+                    allCells[firstBall].ball.transform.SetParent(allCells[j].transform); // 공의 부모를 빈칸으로 바꿔준다
+                    allCells[j].ball = allCells[firstBall].ball; // 빈칸에다가 공을 넣어준다
+                    allCells[j].ball.transform.localPosition = Vector3.zero; // 공의 위치를 초기화. 그러면 변경된 cell 중심에 공이 배치된다
+                    allCells[firstBall].ball = null; // 원래 공이 들어있던 칸은 공을 비워준다
                 }
             }
         }

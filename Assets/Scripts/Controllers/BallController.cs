@@ -5,6 +5,30 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour
 {
+	//이미지를 랜덤하게 바꿔주기
+	private void Start()
+	{
+	}
+
+	// 슬라이드 액션 구독 (일단 무시해주세요)
+	private void OnEnable()
+	{
+		SpaceController.slideAction += OnSlide;
+	}
+
+	private void OnDisable()
+	{
+		SpaceController.slideAction -= OnSlide;
+	}
+
+	void OnSlide(Define.SlideAction slideAction)
+	{
+		//Debug.Log(this.name + slideAction);
+	}
+
+
+	// 아래 주석은 무시해주세요!
+
 	/*
 	protected Animator _animator;
 	protected SpriteRenderer _sprite;
@@ -314,23 +338,5 @@ public class BallController : MonoBehaviour
 	}
 */
 
-	SpaceController space;
 
-	private void Start()
-    {
-		space = FindObjectOfType<SpaceController>();
-	}
-    private void OnEnable()
-    {
-		SpaceController.slideAction += OnSlide;
-
-	}
-    private void OnDisable()
-    {
-		SpaceController.slideAction -= OnSlide;
-	}
-	void OnSlide(Define.SlideAction slideAction)
-    {
-		//Debug.Log(this.name + slideAction);
-    }
 }
