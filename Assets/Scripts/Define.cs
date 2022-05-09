@@ -23,4 +23,29 @@ public class Define
         Click,
         Drag,
     }
+
+    public enum MoveDir
+    {
+        None,
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
+    public enum BallState
+    {
+        Idle,
+        Move,
+        Explode,
+    }
+
+    public enum SlideAction
+    {
+        None,
+        Up,
+        Down,
+        Left,
+        Right,
+    }
 }
