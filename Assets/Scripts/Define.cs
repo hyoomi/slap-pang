@@ -38,6 +38,7 @@ public class Define
         Idle,
         Move,
         Explode,
+        Check,
     }
 
     public enum SlideAction
@@ -47,5 +48,14 @@ public class Define
         Down,
         Left,
         Right,
+    }
+
+    public enum BallType
+    {
+        Cup,
+        Glass,
+        Plant,
+        Plate,
+        Stone,
     }
 }
