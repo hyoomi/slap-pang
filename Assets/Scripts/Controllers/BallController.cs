@@ -8,10 +8,12 @@ public class BallController : MonoBehaviour
 	//이미지를 랜덤하게 바꿔주기
 	private void Start()
 	{
-	}
 
-	// 슬라이드 액션 구독 (일단 무시해주세요)
-	private void OnEnable()
+	}
+   
+
+    // 슬라이드 액션 구독 (일단 무시해주세요)
+    private void OnEnable()
 	{
 		SpaceController.slideAction += OnSlide;
 	}

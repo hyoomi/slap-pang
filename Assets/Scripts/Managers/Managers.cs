@@ -15,11 +15,13 @@ public class Managers : MonoBehaviour
     SceneManager _scene = new SceneManager();
     SoundManager _sound = new SoundManager();
     UIManager _ui = new UIManager();
+    ActionManager _action = new ActionManager();
 
     public static DataManager Data { get { return Instance._data; } }
     public static SceneManager Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
     public static UIManager UI { get { return Instance._ui; } }
+    public static ActionManager Action { get { return Instance._action; } }
     #endregion
 
     void Start()
@@ -41,6 +43,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
 
+            s_instance._action.Init();
             s_instance._data.Init();
             s_instance._sound.Init();
         }

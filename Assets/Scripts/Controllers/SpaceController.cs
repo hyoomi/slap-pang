@@ -65,7 +65,7 @@ public class SpaceController : MonoBehaviour
 
         int spawnCell; // 공을 스폰할 Cell index를 받는 변수
 
-        // 비어있는 cell을 찾을 때까지 while문을 돌립니다
+        // 비어있는 cell을 찾을 때까지 while문을 돌립니
         while (true)
         {
             spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
