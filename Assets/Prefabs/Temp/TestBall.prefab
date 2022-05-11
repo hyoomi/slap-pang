@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2072897536209154535}
   - component: {fileID: 3611015980993598785}
   - component: {fileID: 4000026602408753269}
+  - component: {fileID: 5546549043291132392}
   m_Layer: 0
   m_Name: TestBall
   m_TagString: Untagged
@@ -137,3 +138,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ad1706bc808e3974a81303c6dfbd0460, type: 3}
   - {fileID: 21300000, guid: e9f37530269c7ea409da09c5747795f0, type: 3}
   - {fileID: 21300000, guid: 5d81cbf2e73c14046be5bc3216664460, type: 3}
+  speed: 3
+--- !u!210 &5546549043291132392
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2321610250956719421}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 10
