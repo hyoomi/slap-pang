@@ -200,6 +200,19 @@ MonoBehaviour:
       - m_Target: {fileID: 4158037295600168159, guid: e57b8250d7956a14f95abb79b49c946a,
           type: 3}
         m_MethodName: ShowPopup
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2173093019722528553, guid: e57b8250d7956a14f95abb79b49c946a,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7326788115642392799, guid: e57b8250d7956a14f95abb79b49c946a,
+          type: 3}
+        m_MethodName: Panel_Set
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

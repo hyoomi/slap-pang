@@ -211,7 +211,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1835215317}
+      - m_Target: {fileID: 0}
         m_MethodName: Sound_Control
         m_Mode: 1
         m_Arguments:
@@ -884,7 +884,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1835215317}
+      - m_Target: {fileID: 0}
         m_MethodName: Panel_Set
         m_Mode: 1
         m_Arguments:
@@ -1088,7 +1088,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1835215317}
+      - m_Target: {fileID: 0}
         m_MethodName: Panel_Set
         m_Mode: 1
         m_Arguments:
@@ -1842,7 +1842,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1835215317}
+      - m_Target: {fileID: 0}
         m_MethodName: Panel_Set_No_Save
         m_Mode: 1
         m_Arguments:
@@ -2277,7 +2277,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1835215318}
-  - component: {fileID: 1835215317}
   - component: {fileID: 1835215316}
   m_Layer: 0
   m_Name: Scene_Mgr
@@ -2298,21 +2297,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73208b14da07cf24ebef95d1f0caee02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1835215317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1835215315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e844b0afba053214992b1817b432d77f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 765614308}
-  master: {fileID: 24100000, guid: 00903624ddd40674b83d5ab9398113b3, type: 2}
-  slider: {fileID: 2958060}
 --- !u!4 &1835215318
 Transform:
   m_ObjectHideFlags: 0
