@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,26 +9,35 @@ using UnityEngine.UI;
 - [일시정지]버튼 클릭시 빈 팝업 띄우기 
 */
 
-public class GameStart_3 : MonoBehaviour
+public class GameStart_3 : BaseUI
 {
-    [SerializeField] Text GameStartText;
-    // Start is called before the first frame update
+    private IEnumerator CPrint; // coroutine for print
+
+    // Start is called before the first frame update 
+    [SerializeField]
+    public float sec = 2.0f;
+    public Text GameStartText; 
+    public GameObject GameStart;
+    
+
     void Start()
     {
-        StartCoroutine(StartPrint());
+        CPrint= StartPrint(sec);
+        StartCoroutine(CPrint);
     }
-
-    IEnumerator StartPrint()
+    IEnumerator StartPrint(float sec)
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(sec);
         GameStartText.text = "START";
-        // Change UI into Start Pop up 
-        Debug.Log("executed coroutine");
-    }
 
-    // Update is called once per frame
-    void Update()
+        //wait for another sec and then Close "Start" UI 
+        Coroutine CloseStart = StartCoroutine(CloseStartUI(sec));
+        yield return new WaitForSeconds(sec);
+        StopCoroutine(CloseStart);
+    }
+    IEnumerator CloseStartUI(float sec)
     {
-        
+        yield return new WaitForSeconds(sec); 
+        this.CloseUI();
     }
 }
