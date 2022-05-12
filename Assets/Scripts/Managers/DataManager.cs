@@ -2,6 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+static class Constants //상수값들
+{
+    public const int n = 70; //기본점수
+    //구간별 p값
+    public const int p0 = 3; // ~1000점
+    public const int p1 = 10; // 1,000~10,000점
+    public const int p2 = 120; // 10,000~100,000점
+    public const int p3 = 240; // 100,000~1,000,000점
+    public const int p4 = 700; // 1,000,000~ 10,000,000점
+    public const int p5 = 1500; // 10,000,000~ 100,000,000점
+    public const int p6 = 3000; // 100,000,000 ~ 1,000,000,000점
+    public const int p7 = 10000; // 1,000,000,000점 ~ 
+    
+}
+
 // 최고기록을 저장하고 불러오는 Manager
 public class DataManager 
 {
