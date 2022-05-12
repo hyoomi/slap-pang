@@ -155,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballPrefab: {fileID: 2321610250956719421, guid: 2c19925794838154296898f96a12faf1,
     type: 3}
+  bombPrefab: {fileID: 2321610250956719421, guid: e68f40d1894fd674fae464b9f727b774,
+    type: 3}
   allCells:
   - {fileID: 8084155544372915827}
   - {fileID: 1799279784608285800}
@@ -236,7 +238,6 @@ MonoBehaviour:
   - {fileID: 7842623425335312662}
   - {fileID: 8808170998721871526}
   - {fileID: 7202448804448151822}
-  _slide: 0
 --- !u!1001 &91387701598972016
 PrefabInstance:
   m_ObjectHideFlags: 0

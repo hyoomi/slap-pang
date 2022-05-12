@@ -58,4 +58,12 @@ public class Define
         Plate,
         Stone,
     }
+
+    public enum BombType
+    {
+        Near,
+        Same,
+        LeftRight,
+        UpDown,
+    }
 }

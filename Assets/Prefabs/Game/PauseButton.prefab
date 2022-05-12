@@ -120,8 +120,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7273054511330017493}
-        m_MethodName: pauseBtn
+      - m_Target: {fileID: 4158037295600168159, guid: e57b8250d7956a14f95abb79b49c946a,
+          type: 3}
+        m_MethodName: ShowPopup
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -144,7 +145,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPauseText: {fileID: 7273054511457561831}
-  Panel: {fileID: 2173093019722528553, guid: e57b8250d7956a14f95abb79b49c946a, type: 3}
 --- !u!1 &7273054511457561829
 GameObject:
   m_ObjectHideFlags: 0

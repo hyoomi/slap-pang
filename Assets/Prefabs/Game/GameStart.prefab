@@ -166,4 +166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0243bf4bcd5edcf49b53328e1499bd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sec: 2
   GameStartText: {fileID: 1549820566513260863}
+  GameStart: {fileID: 0}

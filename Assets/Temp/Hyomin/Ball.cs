@@ -7,7 +7,7 @@ using UnityEngine.UI;
 // Idle->Move or Check->Move: 공이동 시작. 다른 입력 막아놔야함
 // Idle->Explode or Idle->Check: 콤보체크완료. 터뜨리기+애니메이션
 
-public class Ball : MonoBehaviour
+public class Ball : BallAndBomb
 {
 	[SerializeField] Sprite[] images;
 	Animator _animator;
@@ -130,6 +130,7 @@ public class Ball : MonoBehaviour
 			yield return null;
 		}
 		transform.localPosition = Vector3.zero;
+		yield return new WaitForSeconds(0.1f);
 		State = Define.BallState.Idle;
 	}
 

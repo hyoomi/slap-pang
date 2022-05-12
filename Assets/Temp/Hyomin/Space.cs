@@ -14,8 +14,10 @@ public class Space : MonoBehaviour
     const int ROW = 10; //(가로 10줄)
     const int COL = 8; //(세로 8줄) 
     const int DEF_CHILD = 0; // Cell의 기본 자식 수
+    int COMBO = 4; // 4콤보 이상이면 터뜨린다. 
 
     [SerializeField] GameObject ballPrefab; // 공 프리펩
+    [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
     [SerializeField] public CellController[] allCells; // 총 80개의 cell
 
     int ballCount; // 공의 총 개수를 업데이트 할 변수
@@ -33,7 +35,6 @@ public class Space : MonoBehaviour
     // ballsAction 발생시 Spawn함수 실행
     void Spawn(Define.BallState ballsState)
     {
-        Debug.Log(ballsState);
         // Idle 상태로 변했다면 Spawn_and_Pop 코루틴 실행
         // (Idle상태로 변하는 경우는 Move가 완료된 이후 뿐이다)
         if (ballsState == Define.BallState.Idle)
@@ -53,6 +54,7 @@ public class Space : MonoBehaviour
     void Start()
     {
         //변수 초기화
+        COMBO = 4;
         ballCount = 0;
         //filled.Initialize();
         // 게임 시작시 구슬 두줄 배치
@@ -65,13 +67,21 @@ public class Space : MonoBehaviour
 
     // 키를 입력받는다
     void Update()
-    {          
-        
+    {
+        // 공 상태가 IDLE일때만 키보드 입력을 받는다
+        if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
+
+        // 폭탄 생성하는 임시 코드
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnBomb();
+        }
+
         if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
         {
             SlideUp();
-            Managers.Action.Slide = Define.SlideAction.Up;           
-         }
+            Managers.Action.Slide = Define.SlideAction.Up;
+        }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             SlideDown();
@@ -91,6 +101,7 @@ public class Space : MonoBehaviour
         {
             Managers.Action.Slide = Define.SlideAction.None;
         }
+
     }
 
     // 공을 스폰합니다
@@ -268,13 +279,17 @@ public class Space : MonoBehaviour
             //Debug.Log(i + "의 콤보는 " + popnumber);
 
             // 4 콤보 미만이면 stack에서 pop 시킨다
-            if (popnumber < 4 && ballList.Count > 0)
+            if (popnumber < COMBO && ballList.Count > 0)
             {
                 for (int j = 0; j < popnumber; j++)
                 {
                     ballList.Pop();             
                 }
+                continue;
             }
+
+            // 4콤보 이상일때
+            Managers.Data.Combo(popnumber);
         }
 
         // 4 콤보 이상이면 공 터뜨리자
@@ -285,7 +300,7 @@ public class Space : MonoBehaviour
             ball.State = Define.BallState.Explode;
             ballCount--;
             Destroy(ball.gameObject);
-            Destroy(ball);
+            Destroy(ball);           
         }
     }
     
@@ -314,5 +329,81 @@ public class Space : MonoBehaviour
             PopBall(index + 1, type);
         PopBall(index - COL, type);
         PopBall(index + COL, type);                   
+    }
+
+    // 폭탄을 스폰해주는 임시 함수
+    public void SpawnBomb()
+    {
+        // Cell이 꽉 찼으니 공을 스폰하지 않습니다
+        if (ballCount >= allCells.Length)
+        {
+            Debug.Log("모든 Cell이 꽉 찼습니다.");
+            return;
+        }
+
+        int spawnCell; // 공을 스폰할 Cell index를 받는 변수
+
+        // 비어있는 cell을 찾을 때까지 while문을 돌립니다
+        while (true)
+        {
+            spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
+            if (allCells[spawnCell].transform.childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
+            {
+                break;
+            }
+        }
+
+        Instantiate(bombPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        ballCount++;
+    }
+
+
+
+    // 시간에 따른 폭탄
+    // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
+    // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
+    public void TimeBomb()
+    {
+
+    }
+
+    // Last chance 폭탄
+    // 게임오버 직전: 게임칸 중 70개가 파괴되지 않고 남아있을때
+    // 2회 제공후에는 70개가 넘어도 Last Chance 폭탄은 제공되지 않는다.
+    public void LastChanceBomb()
+    {
+
+    }
+
+    // 점수에 따른 폭탄
+    // 구간이 변할 때마다 폭탄 1개씩 추가
+    // 점수는 Manager.Data.score에 저장될 예정
+    // 구간은 하드코딩(숫자로) 해주세요
+    public void ScoreBomb()
+    {
+
+    }
+
+
+    // 클릭한 폭탄이 터지는 함수
+    public void Bomb(Define.BombType bomb)
+    {
+        // 주변 반경 2칸 폭발
+        if(bomb == Define.BombType.Near)
+        {
+
+        }
+        else if(bomb == Define.BombType.Same)
+        {
+
+        }
+        else if (bomb == Define.BombType.LeftRight)
+        {
+
+        }
+        else if (bomb == Define.BombType.UpDown)
+        {
+
+        }
     }
 }
