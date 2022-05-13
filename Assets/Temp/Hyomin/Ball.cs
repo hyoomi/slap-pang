@@ -10,139 +10,44 @@ using UnityEngine.UI;
 public class Ball : BallAndBomb
 {
 	[SerializeField] Sprite[] images;
-	Animator _animator;
-	bool _updated = false;	
 
 	/* ------------------ ball Info ------------------*/
+	Define.BallType _type;
 	public Define.BallType Type
 	{
-		get { return _ballInfo.type; }
+		get { return _type; }
 	}
-	public CellController ParentCell
-	{
-		get
-		{ return _ballInfo.parentCell; }
-		set
-		{
-			if (_ballInfo.parentCell == value)
-				return;
 
-			_ballInfo.parentCell = value;
-		}
-	}
-	public Vector3 LocalPos
-	{
-		get
-		{ return _ballInfo.localPos; }
-		set
-		{
-			if (_ballInfo.localPos == value)
-				return;
-
-			_ballInfo.localPos = value;
-			_updated = true;
-		}
-	}
-	public Define.BallState State
-	{
-		get { return _ballInfo.state; }
-		set
-		{
-			if (_ballInfo.state == value)
-				return;
-
-			_ballInfo.state = value;
-			Managers.Action.BallsAction = value;
-			// UpdateAnimation();
-			_updated = true;
-		}
-	}
+	Define.MoveDir _dir;
 	public Define.MoveDir Dir
 	{
-		get { return _ballInfo.moveDir; }
+		get { return _dir; }
 		set
 		{
-			if (_ballInfo.moveDir == value)
+			if (_dir == value)
 				return;
-
-			_ballInfo.moveDir = value;
-
+			_dir = value;
 			// UpdateAnimation(); //폭발 애니메이션
-			_updated = true;
 		}
 	}
-	private class BallInfo
-	{
-		public Define.BallType type; // 컵 잔 화분 접시 돌
-		public CellController parentCell;
-		public Vector3 localPos;
-		public Define.BallState state; // 정지 이동 폭발
-		public Define.MoveDir moveDir; // 위 아래 오른쪽 왼쪽
-
-		public void Init()
-		{
-			int random = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(Define.BallType)).Length);
-			type = (Define.BallType)(random);
-			parentCell = null;
-			localPos = Vector3.zero;
-			state = Define.BallState.Idle;
-			moveDir = Define.MoveDir.None;
-		}
-	}
-	BallInfo _ballInfo = new BallInfo();
 	/* -----------------------------------------------*/
 
-	void Start()
+	protected override void Init()
 	{
-		//Init();
-		_ballInfo.Init();
+		int random = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(Define.BallType)).Length);
+		_type = (Define.BallType)(random);		
+		State = Define.BallState.Idle;
+		_dir = Define.MoveDir.None;
 		GetComponent<Image>().sprite = images[(int)Type];
 	}
 
-	// 슬라이드 액션 구독 
-	private void OnEnable()
-	{
-		Managers.Action.slideAction += OnSlide;
-	}
-	private void OnDisable()
-	{
-		Managers.Action.slideAction -= OnSlide;
-	}
-	// 슬라이드 액션이 발생시 OnSlide함수 실행됨
-	void OnSlide(Define.SlideAction slideAction)
-	{
-		if (slideAction == Define.SlideAction.None) return;
-		State = Define.BallState.Move;
-		StartCoroutine(Lerp(transform.localPosition));
-	}
-	// 스르륵 이동하는 코루틴
-	IEnumerator Lerp(Vector3 startPos)
-	{
-		State = Define.BallState.Move;		
-		float lerpDuration = 0.5f;
-		Vector3 startValue = startPos;
-		Vector3 endValue = Vector3.zero;
-		float timeElapsed = 0;
-		while (timeElapsed < lerpDuration)
-		{
-			transform.localPosition = Vector3.Lerp(startValue, endValue, timeElapsed / lerpDuration);
-			timeElapsed += Time.deltaTime;
-			yield return null;
-		}
-		transform.localPosition = Vector3.zero;
-		yield return new WaitForSeconds(0.1f);
-		State = Define.BallState.Idle;
-	}
-
-	// ball의 부모를 설정한다
-	public void SetParent(Transform parent)
+	public override void Explode()
     {
-		transform.SetParent(parent); // 공의 부모를 빈칸으로 바꿔준다
+		Space.ballCount--;
+		Destroy(gameObject);
+		Destroy(this);
 	}
 
-	
-
-	
 
 /*	void Update()
 	{

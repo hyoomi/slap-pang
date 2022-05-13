@@ -15,21 +15,24 @@ public class Space : MonoBehaviour
     const int COL = 8; //(세로 8줄) 
     const int DEF_CHILD = 0; // Cell의 기본 자식 수
     int COMBO = 4; // 4콤보 이상이면 터뜨린다. 
+    int error = 0; // 무한루프 방지 임지 변수
 
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
     [SerializeField] public CellController[] allCells; // 총 80개의 cell
 
-    int ballCount; // 공의 총 개수를 업데이트 할 변수
+    public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
 
     // ballsAction 구독 신청
     private void OnEnable()
     {
         Managers.Action.ballsAction += Spawn;
+        Managers.Action.clickedBomb += Bomb;
     }
     private void OnDisable()
     {
         Managers.Action.ballsAction -= Spawn;
+        Managers.Action.clickedBomb -= Bomb;
     }
 
     // ballsAction 발생시 Spawn함수 실행
@@ -46,6 +49,9 @@ public class Space : MonoBehaviour
     {
         // Spawn->Pop or Pop->Spawn ?
         SpawnBall();
+        SpawnBall();
+        SpawnBall();
+        SpawnBall();
         yield return new WaitForSeconds(0.1f);
         Pop();
         yield return null;
@@ -61,7 +67,9 @@ public class Space : MonoBehaviour
         for(int i = 0; i < COL * 2; i++)
         {
             ballCount++;
-            Instantiate(ballPrefab, allCells[allCells.Length - 1 - i].transform);
+
+            GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+            go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
         }
     }
 
@@ -119,14 +127,17 @@ public class Space : MonoBehaviour
         // 비어있는 cell을 찾을 때까지 while문을 돌립니다
         while (true)
         {
+            
             spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
             if (allCells[spawnCell].transform.childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
             {
                 break;
             }
+            if (++error > 10000000) { Debug.Log(ballCount + "Cell error");  error = 0; ballCount = allCells.Length; return; }
         }
 
-        Instantiate(ballPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        GameObject go = Instantiate(ballPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++; // 공 개수를 하나 늘립니다
     }
 
@@ -142,7 +153,8 @@ public class Space : MonoBehaviour
                 int firstBall = FindFirstBall_Up(j);
                 if (firstBall != -1) // 공이 들어있는 Cell의 인덱스를 발견했다면
                 {
-                    allCells[firstBall].GetComponentInChildren<Ball>().SetParent(allCells[j].transform);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
+
                 }
             }
         }
@@ -158,7 +170,7 @@ public class Space : MonoBehaviour
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<Ball>().SetParent(allCells[j].transform);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
                 }
             }
         }
@@ -173,7 +185,7 @@ public class Space : MonoBehaviour
                 int firstBall = FindFirstBall_Left(j);
                 if (firstBall != -1) // 공 발견하면
                 {    
-                    allCells[firstBall].GetComponentInChildren<Ball>().SetParent(allCells[j].transform);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
                 }
             }
         }
@@ -189,7 +201,7 @@ public class Space : MonoBehaviour
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<Ball>().SetParent(allCells[j].transform);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
                 }
             }
         }
@@ -260,8 +272,8 @@ public class Space : MonoBehaviour
         // 모든 셀 콤보 검사
         for (int i = 0; i < allCells.Length; i++)
         {
-            if (allCells[i].transform.childCount == DEF_CHILD) continue;
             Ball ball = allCells[i].GetComponentInChildren<Ball>();
+            if (ball == null) continue;
             if (ball.State == Define.BallState.Check) continue;
            
             popnumber = 1;
@@ -297,10 +309,7 @@ public class Space : MonoBehaviour
         for(int i = 0; i < count; i++)
         {
             Ball ball = ballList.Pop();
-            ball.State = Define.BallState.Explode;
-            ballCount--;
-            Destroy(ball.gameObject);
-            Destroy(ball);           
+            ball.State = Define.BallState.Explode;                               
         }
     }
     
@@ -309,9 +318,8 @@ public class Space : MonoBehaviour
     {
         if (index < 0 || index >= allCells.Length)
             return;
-        if (allCells[index].transform.childCount == DEF_CHILD)
-            return;
         Ball ball = allCells[index].GetComponentInChildren<Ball>();
+        if (ball == null) return;
         if (ball.State == Define.BallState.Check)
             return;
         if (type != ball.Type)
@@ -351,9 +359,11 @@ public class Space : MonoBehaviour
             {
                 break;
             }
+            if (++error > 10000000) { Debug.Log(ballCount+"Cell error"); error = 0; ballCount = allCells.Length;  return; }
         }
 
-        Instantiate(bombPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        GameObject go = Instantiate(bombPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++;
     }
 
@@ -386,24 +396,96 @@ public class Space : MonoBehaviour
 
 
     // 클릭한 폭탄이 터지는 함수
-    public void Bomb(Define.BombType bomb)
+    public void Bomb(Bomb bomb)
     {
+        int index = bomb.CellIndex;
+        int tmp;
         // 주변 반경 2칸 폭발
-        if(bomb == Define.BombType.Near)
+        if (bomb.Type == Define.BombType.Near)
+        {
+            // i, i-1, i-9, i-8, i-7, i+1, i+9, i+8, i+7          
+            int[] left = { -9, -1, 7 };
+            int[] middle = { -8, 8 };
+            int[] right = { -7, 1, 9 };
+            for(int i = 0; i < left.Length; i++)
+            {
+                tmp = index + left[i];
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+
+                if (tmp % COL == COL - 1) // 이전줄로 올라가는거 방지
+                    continue;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;                  
+            }
+            for(int i = 0; i < middle.Length; i++)
+            {
+                tmp = index + middle[i];
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
+            for(int i = 0; i < right.Length; i++)
+            {
+                tmp = index + right[i];
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+                if (tmp % COL == 0) // 다음줄로 내려가는거 방지
+                    continue;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
+        }
+        // 같은 종료 폭탄 폭발
+        else if(bomb.Type == Define.BombType.Same)
         {
 
         }
-        else if(bomb == Define.BombType.Same)
+        // 가로 한줄 폭발
+        else if (bomb.Type == Define.BombType.LeftRight)
         {
-
+            for (int i = 1; i < COL; i++)
+            {
+                tmp = index - i;
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+                if (tmp % COL == COL - 1) // 이전줄로 올라가는거 방지
+                    break;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
+            for (int i = 1; i < COL; i++)
+            {
+                tmp = index + i;
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+                if (tmp % COL == 0) // 다음줄로 내러가는거 방지
+                    break;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
         }
-        else if (bomb == Define.BombType.LeftRight)
+        // 세로 한줄 폭발
+        else if (bomb.Type == Define.BombType.UpDown)
         {
+            for (int i = 1; i < ROW; i++)
+            {
+                tmp = index - COL * i;
+                if (tmp < 0 || tmp >= allCells.Length) continue;
 
-        }
-        else if (bomb == Define.BombType.UpDown)
-        {
-
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
+            for (int i = 1; i < ROW; i++)
+            {
+                tmp = index + COL * i;
+                if (tmp < 0 || tmp >= allCells.Length) continue;
+                BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
+                if (bb != null && bb.State != Define.BallState.Explode)
+                    bb.State = Define.BallState.Explode;
+            }
         }
     }
 }

@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa75908fc89bbfa4fbb49f673d0e418c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxTime: 30
+  MaxTime: 90
   Gameover: {fileID: 70222992984965024}
 --- !u!1 &646422104688104721
 GameObject:
