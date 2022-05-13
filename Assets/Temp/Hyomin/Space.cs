@@ -40,8 +40,11 @@ public class Space : MonoBehaviour
     {
         // Idle 상태로 변했다면 Spawn_and_Pop 코루틴 실행
         // (Idle상태로 변하는 경우는 Move가 완료된 이후 뿐이다)
-        if (ballsState == Define.BallState.Idle)
-            StartCoroutine(Spawn_and_Pop());       
+        if (ballsState == Define.BallState.Idle){
+            Managers.Data.ComboCheck();   //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
+            StartCoroutine(Spawn_and_Pop());
+            }
+
     }
 
     // 공을 스폰하고 콤보를 터뜨린다
@@ -54,6 +57,9 @@ public class Space : MonoBehaviour
         SpawnBall();
         yield return new WaitForSeconds(0.1f);
         Pop();
+        
+        Managers.Data.InitCombo();       //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
+        Debug.Log(Managers.Data.combo + "콤보");
         yield return null;
     }
         
