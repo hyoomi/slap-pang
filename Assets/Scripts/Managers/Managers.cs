@@ -52,5 +52,6 @@ public class Managers : MonoBehaviour
     public static void Clear()
     {
         Scene.Clear();
+        Data.Clear();
     }
 }

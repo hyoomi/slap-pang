@@ -14,6 +14,7 @@ public class SceneManager
     {
         Managers.Clear();
         UnityEngine.SceneManagement.SceneManager.LoadScene(GetSceneName(type));
+        Time.timeScale = 1;
     }
 
     // Scene의 이름을 가져오는 함수. Enum의 활용.

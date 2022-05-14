@@ -64,8 +64,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 421e1b3218eaa664aabd6e2162da67eb, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -156,11 +156,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 646422105159763276}
   m_FillRect: {fileID: 646422104688104720}
   m_HandleRect: {fileID: 646422105159763277}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa75908fc89bbfa4fbb49f673d0e418c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxTime: 90
+  MaxTime: 30
   Gameover: {fileID: 4644073794913695410, guid: 46201086992fb1d41a0137935057366a,
     type: 3}
 --- !u!1 &646422104688104721

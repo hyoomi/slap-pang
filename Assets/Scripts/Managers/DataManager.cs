@@ -98,6 +98,8 @@ public class DataManager
 
     public void Clear()
     {
-
+        score = 0;
+        pastscore = 0;
+        combo = 0;
     }
 }

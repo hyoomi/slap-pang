@@ -20,6 +20,7 @@ public class BaseUI : MonoBehaviour
     public void ShowPopup(GameObject go)
     {
         Managers.UI.LoadUI<PopupUI>(go.name);
+        Time.timeScale = 0;
     }
 
     // 해당 UI 삭제

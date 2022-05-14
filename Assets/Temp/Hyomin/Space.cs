@@ -26,11 +26,17 @@ public class Space : MonoBehaviour
     // ballsAction 구독 신청
     private void OnEnable()
     {
+        Managers.Action.slideAction += TimeBomb;
+        Managers.Action.slideAction += LastChanceBomb;
+        Managers.Action.slideAction += ScoreBomb;
         Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
     }
     private void OnDisable()
     {
+        Managers.Action.slideAction -= TimeBomb;
+        Managers.Action.slideAction -= LastChanceBomb;
+        Managers.Action.slideAction -= ScoreBomb;
         Managers.Action.ballsAction -= Spawn;
         Managers.Action.clickedBomb -= Bomb;
     }
@@ -59,7 +65,7 @@ public class Space : MonoBehaviour
         Pop();
 
         Managers.Data.InitCombo();       //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
-        Debug.Log(Managers.Data.combo + "콤보");
+        //Debug.Log(Managers.Data.combo + "콤보");
         yield return null;
     }
         
@@ -380,7 +386,7 @@ public class Space : MonoBehaviour
     // 시간에 따른 폭탄
     // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
     // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
-    public void TimeBomb()
+    public void TimeBomb(Define.SlideAction slide)
     {
 
     }
@@ -389,7 +395,7 @@ public class Space : MonoBehaviour
     // 게임오버 직전: 게임칸 중 70개가 파괴되지 않고 남아있을때
     // 2회 제공후에는 70개가 넘어도 Last Chance 폭탄은 제공되지 않는다.
     static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 갯수
-    public void LastChanceBomb()
+    public void LastChanceBomb(Define.SlideAction slide)
     { 
         if (ballCount >= 70 && lastChanceBomb_count <= 1)
         {
@@ -403,7 +409,7 @@ public class Space : MonoBehaviour
     // 구간이 변할 때마다 폭탄 1개씩 추가
     // 점수는 Manager.Data.score에 저장될 예정
     // 구간은 하드코딩(숫자로) 해주세요
-    public void ScoreBomb()
+    public void ScoreBomb(Define.SlideAction slide)
     {
 
     }

@@ -9,29 +9,32 @@ public class TimerScript : BaseUI
     public float MaxTime = 8f;
     float timeLeft;
     public GameObject Gameover;
+    bool check;
+
     void Start()
     {
         //Gameover.SetActive(false);
         GameObject go= Gameover;
-        base.SetFalse(go);
         Timer = GetComponent<Slider>();
-        timeLeft = MaxTime;
+        timeLeft = 0;
+        check = false;
     }
 
 
     void Update()
     {
         GameObject go = Gameover;
-        if (timeLeft > 0)
+        if (timeLeft < MaxTime)
         {
-            timeLeft -= Time.deltaTime;
+            timeLeft += Time.deltaTime;
             Timer.value = timeLeft / MaxTime;
         }
         else
         {
             //Gameover.SetActive(true);
-            base.SetTrue(go);
-            Time.timeScale = 0;
+            if (check) return;
+            check = true;
+            base.ShowPopup(go);
         }
     }
 }
