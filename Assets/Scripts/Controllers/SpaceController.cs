@@ -79,7 +79,7 @@ public class SpaceController : MonoBehaviour
         BallController tempBallController = tempBall.GetComponent<BallController>(); 
         allCells[spawnCell].GetComponent<CellController>().ball = tempBallController; // 해당 cell에 방금 만든 ball을 담습니다
         filled[spawnCell] = 1; // 해당 cell이 찼다는것을 표시해줍니다
-        ballCount++; // 공 개스를 하나 늘립니다
+        ballCount++; // 공 개스를 하나 늘립니다.
     }    
 
     // 위로 슬라이드 할 경우

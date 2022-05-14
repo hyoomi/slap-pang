@@ -57,7 +57,7 @@ public class Space : MonoBehaviour
         SpawnBall();
         yield return new WaitForSeconds(0.1f);
         Pop();
-        
+
         Managers.Data.InitCombo();       //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
         Debug.Log(Managers.Data.combo + "콤보");
         yield return null;
@@ -68,6 +68,7 @@ public class Space : MonoBehaviour
         //변수 초기화
         COMBO = 4;
         ballCount = 0;
+
         //filled.Initialize();
         // 게임 시작시 구슬 두줄 배치
         for(int i = 0; i < COL * 2; i++)
@@ -144,7 +145,7 @@ public class Space : MonoBehaviour
 
         GameObject go = Instantiate(ballPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
         go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
-        ballCount++; // 공 개수를 하나 늘립니다
+        ballCount++; // 공 개수를 하나 늘립니다.
     }
 
     // 위로 슬라이드 할 경우
@@ -317,6 +318,7 @@ public class Space : MonoBehaviour
             Ball ball = ballList.Pop();
             ball.State = Define.BallState.Explode;                               
         }
+   
     }
     
     // index의 콤보 검사하는 함수
@@ -386,9 +388,15 @@ public class Space : MonoBehaviour
     // Last chance 폭탄
     // 게임오버 직전: 게임칸 중 70개가 파괴되지 않고 남아있을때
     // 2회 제공후에는 70개가 넘어도 Last Chance 폭탄은 제공되지 않는다.
+    static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 갯수
     public void LastChanceBomb()
-    {
-
+    { 
+        if (ballCount >= 70 && lastChanceBomb_count <= 1)
+        {
+            SpawnBomb();
+            lastChanceBomb_count++;
+            Debug.Log("LastChance Bomb 생성!");
+        }
     }
 
     // 점수에 따른 폭탄
