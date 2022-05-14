@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
-    [SerializeField] Text scorePrefab;
-    //public Text ScoreText;
+    
+    Text scoreText;
 
     public string GetCommaScore(ulong data)
     {
@@ -14,11 +14,17 @@ public class Score : MonoBehaviour
         return string.Format("{0:#,###,###,###}",data);
     }
 
+    // Text GetComponent는 Start 함수에서 딱 한번 호출
+    void Start()
+    {
+        scoreText = GetComponent<Text>();
+    }
+
     // Update is called once per frame
     void Update()
     {
         //ScoreText.text = Managers.data.score.ToString();
         //쉼표 출력을 위해 GetCommaScore 함수를 사용했습니다
-        scorePrefab.text = GetCommaScore(Managers.Data.score).ToString();
+        scoreText.text = GetCommaScore(Managers.Data.score).ToString();
     }
 }
