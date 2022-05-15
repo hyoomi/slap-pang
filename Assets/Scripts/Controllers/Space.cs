@@ -19,14 +19,13 @@ public class Space : MonoBehaviour
 
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
-    [SerializeField] public CellController[] allCells; // 총 80개의 cell
+    [SerializeField] public Transform[] allCells; // 총 80개의 cell
 
     public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
 
     // ballsAction 구독 신청
     private void OnEnable()
     {
-        Managers.Action.slideAction += TimeBomb;
         Managers.Action.slideAction += LastChanceBomb;
         Managers.Action.slideAction += ScoreBomb;
         Managers.Action.ballsAction += Spawn;
@@ -34,7 +33,6 @@ public class Space : MonoBehaviour
     }
     private void OnDisable()
     {
-        Managers.Action.slideAction -= TimeBomb;
         Managers.Action.slideAction -= LastChanceBomb;
         Managers.Action.slideAction -= ScoreBomb;
         Managers.Action.ballsAction -= Spawn;
@@ -74,16 +72,20 @@ public class Space : MonoBehaviour
         //변수 초기화
         COMBO = 4;
         ballCount = 0;
-
+        Playtime = 30f;
+        lastChanceBomb_count = 0;
         //filled.Initialize();
         // 게임 시작시 구슬 두줄 배치
         for(int i = 0; i < COL * 2; i++)
         {
             ballCount++;
 
-            GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+            GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
             go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
         }
+
+        //TimeBomb의 Timer 시작
+        TimeBomb();
     }
 
     // 키를 입력받는다
@@ -142,14 +144,14 @@ public class Space : MonoBehaviour
         {
             
             spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
-            if (allCells[spawnCell].transform.childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
+            if (allCells[spawnCell].childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
             {
                 break;
             }
             if (++error > 10000000) { Debug.Log(ballCount + "Cell error");  error = 0; ballCount = allCells.Length; return; }
         }
 
-        GameObject go = Instantiate(ballPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        GameObject go = Instantiate(ballPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
         go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++; // 공 개수를 하나 늘립니다.
     }
@@ -161,12 +163,12 @@ public class Space : MonoBehaviour
     {
         for (int j = 0; j < allCells.Length; j++)
         {
-            if (allCells[j].transform.childCount == DEF_CHILD)
+            if (allCells[j].childCount == DEF_CHILD)
             {
                 int firstBall = FindFirstBall_Up(j);
                 if (firstBall != -1) // 공이 들어있는 Cell의 인덱스를 발견했다면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
 
                 }
             }
@@ -177,13 +179,13 @@ public class Space : MonoBehaviour
     {
         for (int j = allCells.Length - 1; j >= 0; j--)
         {
-            if (allCells[j].transform.childCount == DEF_CHILD)
+            if (allCells[j].childCount == DEF_CHILD)
             {
                 int firstBall = FindFirstBall_Down(j);
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
                 }
             }
         }
@@ -193,12 +195,12 @@ public class Space : MonoBehaviour
     {    
         for (int j = 0; j < allCells.Length; j++)
         {
-            if (allCells[j].transform.childCount == DEF_CHILD)
+            if (allCells[j].childCount == DEF_CHILD)
             {
                 int firstBall = FindFirstBall_Left(j);
                 if (firstBall != -1) // 공 발견하면
                 {    
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
                 }
             }
         }
@@ -208,13 +210,13 @@ public class Space : MonoBehaviour
     {
         for (int j = allCells.Length - 1; j >= 0; j--)
         {
-            if (allCells[j].transform.childCount == DEF_CHILD)
+            if (allCells[j].childCount == DEF_CHILD)
             {
                 int firstBall = FindFirstBall_Right(j);
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j].transform, j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
                 }
             }
         }
@@ -228,7 +230,7 @@ public class Space : MonoBehaviour
         if (next >= allCells.Length) return -1; // 가장 밑줄 범위 벗어나면 종료
         for (int i = next; i < allCells.Length; i += COL) // 한줄 조사. 위에서 아래로
         {
-            if (allCells[i].transform.childCount > DEF_CHILD)
+            if (allCells[i].childCount > DEF_CHILD)
                 return i;
         }
         return -1;
@@ -242,7 +244,7 @@ public class Space : MonoBehaviour
         if (next < 0) return -1; // 가장 윗줄 범위 벗어나면 종료
         for (int i = next; i >= 0; i -= COL) // 한줄 조사. 아래서 위로
         {
-            if (allCells[i].transform.childCount > DEF_CHILD)
+            if (allCells[i].childCount > DEF_CHILD)
                 return i;
         }
         return -1;
@@ -256,7 +258,7 @@ public class Space : MonoBehaviour
         for (int i = next; i % COL != 0; i += 1) // 다음 줄로 넘어가기 전까지 오른쪽에 있는 칸 조사
         {
             if (i >= allCells.Length) return -1;
-            if (allCells[i].transform.childCount > DEF_CHILD)
+            if (allCells[i].childCount > DEF_CHILD)
                 return i;
         }
         return -1;
@@ -270,7 +272,7 @@ public class Space : MonoBehaviour
         for (int i = next; i % COL != COL - 1; i -= 1) // 이전 줄로 넘어가기 전까지 왼쪽에 있는 칸 조사
         {
             if (i < 0) return -1;
-            if (allCells[i].transform.childCount > DEF_CHILD)
+            if (allCells[i].childCount > DEF_CHILD)
                 return i;
         }
         return -1;
@@ -369,14 +371,14 @@ public class Space : MonoBehaviour
         while (true)
         {
             spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
-            if (allCells[spawnCell].transform.childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
+            if (allCells[spawnCell].childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
             {
                 break;
             }
             if (++error > 10000000) { Debug.Log(ballCount+"Cell error"); error = 0; ballCount = allCells.Length;  return; }
         }
 
-        GameObject go = Instantiate(bombPrefab, allCells[spawnCell].transform); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        GameObject go = Instantiate(bombPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
         go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++;
     }
@@ -387,7 +389,7 @@ public class Space : MonoBehaviour
     // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
     // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
     public float Playtime = 30f;
-    public void TimeBomb(Define.SlideAction slide)
+    public void TimeBomb()
     {
         if (Managers.Data.combo >= 2)
         {
@@ -399,16 +401,14 @@ public class Space : MonoBehaviour
             Playtime = 30f;
             StartCoroutine(SpawnbombDelay(Playtime));
             
-        }
-        IEnumerator SpawnbombDelay(float delaytime)
-        {
-            yield return new WaitForSeconds(delaytime);
-            if(slide != Define.SlideAction.None)
-            {
-                SpawnBomb();
-            }
-            
-        }
+        }       
+    }
+
+    IEnumerator SpawnbombDelay(float delaytime)
+    {
+        yield return new WaitForSeconds(delaytime);
+        SpawnBomb();
+        TimeBomb();
     }
 
     // Last chance 폭탄

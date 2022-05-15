@@ -53,5 +53,6 @@ public class Managers : MonoBehaviour
     {
         Scene.Clear();
         Data.Clear();
+        Action.Init();
     }
 }

@@ -49,5 +49,8 @@ public class ActionManager
 
 	public void Init()
     {
-    }
+		_slide = Define.SlideAction.None;
+		_ballsAction = Define.BallState.Idle;
+		_bomb = null;
+	}
 }

@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa75908fc89bbfa4fbb49f673d0e418c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxTime: 30
+  MaxTime: 50
   Gameover: {fileID: 4644073794913695410, guid: 46201086992fb1d41a0137935057366a,
     type: 3}
 --- !u!1 &646422104688104721
