@@ -386,9 +386,29 @@ public class Space : MonoBehaviour
     // 시간에 따른 폭탄
     // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
     // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
+    public float Playtime = 30f;
     public void TimeBomb(Define.SlideAction slide)
     {
-
+        if (Managers.Data.combo >= 2)
+        {
+            Playtime -= (5 * (Managers.Data.combo-1));
+            StartCoroutine(SpawnbombDelay(Playtime));
+        }
+        else
+        {
+            Playtime = 30f;
+            StartCoroutine(SpawnbombDelay(Playtime));
+            
+        }
+        IEnumerator SpawnbombDelay(float delaytime)
+        {
+            yield return new WaitForSeconds(delaytime);
+            if(slide != Define.SlideAction.None)
+            {
+                SpawnBomb();
+            }
+            
+        }
     }
 
     // Last chance 폭탄
