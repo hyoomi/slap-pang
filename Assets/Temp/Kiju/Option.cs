@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 
 public class Option : MonoBehaviour
 {
-    public AudioMixer master;
+    static public AudioMixer master;
     public Slider slider;
 
 

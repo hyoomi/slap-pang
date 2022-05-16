@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using System;
 
 // Sound를 컨트롤하는 Manager
@@ -8,6 +9,9 @@ public class SoundManager
 {
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
     Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>(); //효과음 로드시 성능 향상을 위해 dictionary를 사용한다고 합니다.
+    GameObject LobbyBGM;
+
+    //AudioSource LobbyBGM = Resources.Load<AudioSource>("Prefabs/LobbyBGM");
 
     public void Init()
     {
@@ -16,6 +20,7 @@ public class SoundManager
         //     _audioSources = GameObject.AddComponent<AudioSource>();
         //     _audioSources.loop = true;
         // }
+        LobbyBGM = Resources.Load<GameObject>("Prefabs/LobbyBGM");
         GameObject root = GameObject.Find("@Sound");
         if (root == null) 
         {
@@ -23,13 +28,15 @@ public class SoundManager
             UnityEngine.Object.DontDestroyOnLoad(root);
 
         string[] soundNames = System.Enum.GetNames(typeof(Define.Sound)); // "Bgm", "Effect"
-            for (int i = 0; i < soundNames.Length - 1; i++)
+            for (int i = 0; i < soundNames.Length; i++)
             {
-                GameObject go = new GameObject { name = soundNames[i] }; 
+                GameObject go = new GameObject { name = soundNames[i] };
                 _audioSources[i] = go.AddComponent<AudioSource>();
                 go.transform.parent = root.transform;
             }
 
+            _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
+            //_audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = Option.master.FindMatchingGroups("Master")[0];
             _audioSources[(int)Define.Sound.Bgm].loop = true; // bgm 재생기는 무한 반복 재생
         }
     }

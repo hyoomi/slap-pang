@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3505418801260998794}
   - component: {fileID: 5035049949523272301}
   m_Layer: 0
-  m_Name: '@Sound'
+  m_Name: LobbyBGM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
