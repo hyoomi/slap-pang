@@ -6,7 +6,6 @@ using UnityEngine.Audio;
 
 public class Option : MonoBehaviour
 {
-    static public AudioMixer master;
     public Slider slider;
 
 
@@ -28,10 +27,10 @@ public class Option : MonoBehaviour
         float volume = slider.value;
         //Debug.Log(slider.value+ "," + PlayerPrefs.GetFloat("Volume"));
         if(volume == -40f){
-            master.SetFloat("Master", -80);
+            Managers.Sound.master.SetFloat("Master", -80);
         }
         else{
-            master.SetFloat("Master", volume);
+            Managers.Sound.master.SetFloat("Master", volume);
         }
         PlayerPrefs.SetFloat("Volume", slider.value);
     }

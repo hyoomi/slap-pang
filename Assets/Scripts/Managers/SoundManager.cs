@@ -7,6 +7,8 @@ using System;
 // Sound를 컨트롤하는 Manager
 public class SoundManager
 {
+    public AudioMixer master;
+
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
     Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>(); //효과음 로드시 성능 향상을 위해 dictionary를 사용한다고 합니다.
     GameObject LobbyBGM;
@@ -21,6 +23,7 @@ public class SoundManager
         //     _audioSources.loop = true;
         // }
         LobbyBGM = Resources.Load<GameObject>("Prefabs/LobbyBGM");
+        master = Resources.Load<AudioMixer>("Master");
         GameObject root = GameObject.Find("@Sound");
         if (root == null) 
         {
@@ -36,8 +39,9 @@ public class SoundManager
             }
 
             _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
-            //_audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = Option.master.FindMatchingGroups("Master")[0];
+            _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("Master")[0];
             _audioSources[(int)Define.Sound.Bgm].loop = true; // bgm 재생기는 무한 반복 재생
+            _audioSources[(int)Define.Sound.Bgm].Play();
         }
     }
 
