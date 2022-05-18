@@ -24,7 +24,7 @@ public class Managers : MonoBehaviour
     public static ActionManager Action { get { return Instance._action; } }
     #endregion
 
-    void Start()
+    void Awake()
     {
         Init();
     }
