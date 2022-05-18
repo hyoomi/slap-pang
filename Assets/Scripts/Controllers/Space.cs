@@ -391,7 +391,7 @@ public class Space : MonoBehaviour
     public float Playtime = 30f;
     public void TimeBomb()
     {
-        if (Managers.Data.combo >= 2)
+        /*if (Managers.Data.combo >= 2)
         {
             Playtime -= (5 * (Managers.Data.combo-1));
             StartCoroutine(SpawnbombDelay(Playtime));
@@ -401,7 +401,7 @@ public class Space : MonoBehaviour
             Playtime = 30f;
             StartCoroutine(SpawnbombDelay(Playtime));
             
-        }       
+        }   */    
     }
 
     IEnumerator SpawnbombDelay(float delaytime)

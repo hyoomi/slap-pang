@@ -1,0 +1,13 @@
+05/08 회의
+
+1. spaceController.cs 읽어보기
+주석달아놨는데 이해안되시는게 있으면 카톡주세요!
+하드코딩 되어있는데 이번주 내로 수정할 예정입니다
+
+2. space.prefab 살펴보기
+어떤 방식으로 동작하는지 봐주세요!
+
+3. ballController.cs 와 ball.prefab 수정하기
+공 이미지는 Assets>Images>Beads 폴더 안에 총 5개 있습니다
+임시로 접시 이미지를 넣어놨는데 5가지 중 랜덤으로 이미지가 선택되게 변경해주세요
+spaceController가 아닌 ballController안에서 작업해주세요!
