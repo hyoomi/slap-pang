@@ -23,6 +23,7 @@ public class DataManager
     public ulong score; // uint 최댓값: 4,294,967,295
     public int combo;
     public ulong pastscore;
+    public static int p_state;
 
     public void Init()
     {
@@ -56,31 +57,48 @@ public class DataManager
 
     public int FirstScore(int explode)
     {
-        if(score < 1000){
+        if (score < 1000)
+        {
+            p_state = 0;
             return explode * (explode - 3) * Constants.n * Constants.p0;
         }
-        else if(score >= 1000 && score < 10000){
+        else if (score >= 1000 && score < 10000)
+        {
+            p_state = 1;
             return explode * (explode - 3) * Constants.n * Constants.p1;
         }
-        else if(score >= 10000 && score < 100000){
+        else if (score >= 10000 && score < 100000)
+        {
+            p_state = 2;
             return explode * (explode - 3) * Constants.n * Constants.p2;
         }
-        else if(score >= 100000 && score < 1000000){
+        else if (score >= 100000 && score < 1000000)
+        {
+            p_state = 3;
             return explode * (explode - 3) * Constants.n * Constants.p3;
         }
-        else if(score >= 1000000 && score < 10000000){
+        else if (score >= 1000000 && score < 10000000)
+        {
+            p_state = 4;
             return explode * (explode - 3) * Constants.n * Constants.p4;
         }
-        else if(score >= 10000000 && score < 100000000){
+        else if (score >= 10000000 && score < 100000000)
+        {
+            p_state = 5;
             return explode * (explode - 3) * Constants.n * Constants.p5;
         }
-        else if(score >= 100000000 && score < 1000000000){
+        else if (score >= 100000000 && score < 1000000000)
+        {
+            p_state = 6;
             return explode * (explode - 3) * Constants.n * Constants.p6;
         }
-        else{
+        else
+        {
+            p_state = 7;
             return explode * (explode - 3) * Constants.n * Constants.p7;
         }
     }
+
 
     public void CalculateScore(int FirstScore)
     {

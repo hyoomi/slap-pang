@@ -10,6 +10,7 @@ public class TimerScript : BaseUI
     float timeLeft;
     public GameObject Gameover;
     bool check;
+    int p_change_count = 1;
 
     void Start()
     {
@@ -28,6 +29,40 @@ public class TimerScript : BaseUI
         {
             timeLeft += Time.deltaTime;
             Timer.value = timeLeft / MaxTime;
+            if (DataManager.p_state == 1 && p_change_count == 1)
+            {
+                timeLeft -= 10f;
+                p_change_count++;
+            }
+            else if (DataManager.p_state == 2 && p_change_count ==2)
+            {
+                timeLeft -= 10f;
+                p_change_count++;
+
+            }
+            else if (DataManager.p_state == 3 && p_change_count == 3)
+            {
+                timeLeft -= 10f;
+                p_change_count++;
+            }
+            else if (DataManager.p_state == 4 && p_change_count == 4)
+            {
+                timeLeft -= 5f;
+                p_change_count++;
+
+            }
+            else if (DataManager.p_state == 5 && p_change_count == 5)
+            {
+                timeLeft -= 5f;
+                p_change_count++;
+            }
+            else if (DataManager.p_state == 6 && p_change_count == 6)
+            {
+                timeLeft -= 5f;
+                p_change_count++;
+            }
+
+
         }
         else
         {
