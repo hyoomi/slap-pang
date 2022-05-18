@@ -8,6 +8,7 @@ public class ActionManager
 	public Action<Define.SlideAction> slideAction; // 슬라이드에 따른 액션
 	public Action<Define.BallState> ballsAction; // 전체 공 상태에 따른 액션
 	public Action<Bomb> clickedBomb; // 클릭된 폭탄을 알리는 액션
+	public Action<int> comboAction; // 콤보를 알리는 액션
 
 	public Define.SlideAction _slide; // 지금 발생중인 슬라이드 행위를 체크
 	public Define.SlideAction Slide
@@ -46,6 +47,19 @@ public class ActionManager
 			clickedBomb?.Invoke(_bomb);
 		}
 	}
+
+	// 콤보가 입력됐을때, 몇 콤보인지 알린다
+	int _combo;
+	public int ComboAction
+    {
+        get { return _combo; }
+        set
+        {
+			_combo = value;
+			comboAction?.Invoke(_combo);
+
+		}
+    }
 
 	public void Init()
     {

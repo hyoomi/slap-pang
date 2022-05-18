@@ -30,6 +30,7 @@ public class Space : MonoBehaviour
         Managers.Action.slideAction += ScoreBomb;
         Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
+        Managers.Action.comboAction += ReduceBombTimer;
     }
     private void OnDisable()
     {
@@ -37,6 +38,7 @@ public class Space : MonoBehaviour
         Managers.Action.slideAction -= ScoreBomb;
         Managers.Action.ballsAction -= Spawn;
         Managers.Action.clickedBomb -= Bomb;
+        Managers.Action.comboAction -= ReduceBombTimer;
     }
 
     // ballsAction 발생시 Spawn함수 실행
@@ -44,11 +46,10 @@ public class Space : MonoBehaviour
     {
         // Idle 상태로 변했다면 Spawn_and_Pop 코루틴 실행
         // (Idle상태로 변하는 경우는 Move가 완료된 이후 뿐이다)
-        if (ballsState == Define.BallState.Idle){
-            Managers.Data.ComboCheck();   //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
+        if (ballsState == Define.BallState.Idle)
+        {
             StartCoroutine(Spawn_and_Pop());
-            }
-
+        }
     }
 
     // 공을 스폰하고 콤보를 터뜨린다
@@ -62,8 +63,6 @@ public class Space : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         Pop();
 
-        Managers.Data.InitCombo();       //콤보 함수들을 Space.cs에 넣지 않고 구현할 방법을 생각하지 못하여 일단 이곳에 추가했습니다.
-        //Debug.Log(Managers.Data.combo + "콤보");
         yield return null;
     }
         
@@ -318,10 +317,12 @@ public class Space : MonoBehaviour
             // 4콤보 이상일때
             Managers.Data.Combo(popnumber);
         }
-
+        
         // 4 콤보 이상이면 공 터뜨리자
         int count = ballList.Count;
-        for(int i = 0; i < count; i++)
+        Managers.Data.COMBO = count;
+
+        for (int i = 0; i < count; i++)
         {
             Ball ball = ballList.Pop();
             ball.State = Define.BallState.Explode;                               
@@ -384,31 +385,37 @@ public class Space : MonoBehaviour
     }
 
 
-
     // 시간에 따른 폭탄
     // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
     // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
     public float Playtime = 30f;
     public void TimeBomb()
     {
-        /*if (Managers.Data.combo >= 2)
-        {
-            Playtime -= (5 * (Managers.Data.combo-1));
-            StartCoroutine(SpawnbombDelay(Playtime));
-        }
-        else
-        {
-            Playtime = 30f;
-            StartCoroutine(SpawnbombDelay(Playtime));
-            
-        }   */    
+        StartCoroutine(SpawnbombDelay());
     }
 
-    IEnumerator SpawnbombDelay(float delaytime)
+    IEnumerator SpawnbombDelay()
     {
-        yield return new WaitForSeconds(delaytime);
-        SpawnBomb();
-        TimeBomb();
+        Playtime = 30f;
+        float time = 0f;
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            Playtime -= 1f;
+            time += 1f;
+            if(Playtime <= 0f)
+            {
+                SpawnBomb();
+                TimeBomb();
+                yield break;
+            }
+        }       
+    }
+
+    public void ReduceBombTimer(int combo)
+    {
+        if (combo >= 2)
+            Playtime -= 5f;
     }
 
     // Last chance 폭탄
@@ -480,7 +487,13 @@ public class Space : MonoBehaviour
         // 같은 종료 폭탄 폭발
         else if(bomb.Type == Define.BombType.Same)
         {
-
+            for (int i = 0; i < allCells.Length; i++)
+            {
+                if (i < 0 || i >= allCells.Length) continue;
+                Ball ball = allCells[i].GetComponentInChildren<Ball>();
+                if (ball != null && ball.Type == bomb.BallType && ball.State != Define.BallState.Explode)
+                    ball.State = Define.BallState.Explode;
+            }
         }
         // 가로 한줄 폭발
         else if (bomb.Type == Define.BombType.LeftRight)

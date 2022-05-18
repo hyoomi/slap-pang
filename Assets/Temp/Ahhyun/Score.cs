@@ -27,6 +27,7 @@ public class Score : MonoBehaviour
         {
             if (colorText[i]==',')  // 콤마를 발견했다면
             {
+                if(j + 1== colorCode.Length) { break; }
                 colorText = colorText.Insert(i + 1, colorCode[j++]);  //콤마뒤에 컬러코드 삽입 "890,<color=#0000CD>123</color>"
                 colorText = colorText.Insert(i + 1, endCode);  // 콤마뒤에 end코드 삽입 "890,</color><color=#0000CD>123</color>"       
             }

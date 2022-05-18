@@ -159,3 +159,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b954b08049c171446aca3590103be7bc, type: 3}
   - {fileID: 21300000, guid: 3f1c922828021104d810cf33a28912fb, type: 3}
   - {fileID: 21300000, guid: e5492275519db1547a5c8130d518d24b, type: 3}
+  sameImages:
+  - {fileID: 21300000, guid: 0e22d03d71f96a247969748c52a8e505, type: 3}
+  - {fileID: 21300000, guid: 9f3e3f570e0118d489e4c55b7f556a91, type: 3}
+  - {fileID: 21300000, guid: a5b96b7ac659f374196f49a5a89adb01, type: 3}
+  - {fileID: 21300000, guid: 20b2a8c921a147f4cba8de542dc2acd7, type: 3}
+  - {fileID: 21300000, guid: 5c0b79a8e31575f409fa5263575726b9, type: 3}

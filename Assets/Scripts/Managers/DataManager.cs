@@ -13,47 +13,41 @@ static class Constants //상수값들
     public const int p4 = 700; // 1,000,000~ 10,000,000점
     public const int p5 = 1500; // 10,000,000~ 100,000,000점
     public const int p6 = 3000; // 100,000,000 ~ 1,000,000,000점
-    public const int p7 = 10000; // 1,000,000,000점 ~ 
-    
+    public const int p7 = 10000; // 1,000,000,000점 ~   
 }
 
 // 최고기록을 저장하고 불러오는 Manager
 public class DataManager 
 {
     public ulong score; // uint 최댓값: 4,294,967,295
-    public int combo;
-    public ulong pastscore;
     public int p_state;
+
+    // 몇개의 공이 폭발할지 입력되면 콤보를 알린다
+    int _combo;
+    public int COMBO
+    {
+        get { return _combo; }
+        set
+        {         
+            if (value == 0) { _combo = 0; return; }
+            _combo++;
+            Managers.Action.ComboAction = _combo;
+            Debug.Log(_combo + "콤보");
+        }
+    }
 
     public void Init()
     {
         score = 0;
-        pastscore = 0;
-        combo = 0;
+        _combo = 0;
     }
 
     // explode로 4, 5, 6, ... 값이 입력됨
     // 몇 콤보인지 카운트하고 점수를 누적시키자 (기획ppt참고)
     public void Combo(int explode)
     {
-        Debug.Log(explode + "개의 구슬이 폭발!");
-        ++combo;
         CalculateScore(FirstScore(explode));
         Set_state_p(); // p 상태 확인 
-
-        Debug.Log(score + "점");
-    }
-
-    public void ComboCheck()
-    {
-        pastscore = score;
-    }
-
-    // 슬라이드를 했는데 아무것도 안터졌으면 콤보 초기화
-    public void InitCombo() //콤보 
-    {
-        if(pastscore == score)
-            combo = 0;
     }
 
     public int FirstScore(int explode)
@@ -95,16 +89,16 @@ public class DataManager
 
     public void CalculateScore(int FirstScore)
     {
-        if (combo < 2)
+        if (_combo < 2)
             score += (ulong)FirstScore;
-        else if (combo == 2)
+        else if (_combo == 2)
             score += (ulong)(FirstScore * 50);
-        else if (combo == 3)
+        else if (_combo == 3)
             score += (ulong)(FirstScore * 100);
-        else if (combo == 4)
+        else if (_combo == 4)
             score += (ulong)(FirstScore * 200);
-        else if (combo > 4)
-            score += (ulong)(FirstScore * 100 * (combo + 1));
+        else if (_combo > 4)
+            score += (ulong)(FirstScore * 100 * (_combo + 1));
     }
 
     public void Set_state_p() //p 상태 설정 
@@ -146,7 +140,6 @@ public class DataManager
     public void Clear()
     {
         score = 0;
-        pastscore = 0;
-        combo = 0;
+        _combo = 0;
     }
 }
