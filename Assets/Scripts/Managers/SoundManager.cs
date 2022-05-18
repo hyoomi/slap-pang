@@ -17,11 +17,6 @@ public class SoundManager
 
     public void Init()
     {
-        // if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == Managers.Scene.GetSceneName(Define.Scene.Lobby))
-        // {
-        //     _audioSources = GameObject.AddComponent<AudioSource>();
-        //     _audioSources.loop = true;
-        // }
         LobbyBGM = Resources.Load<GameObject>("Prefabs/LobbyBGM");
         master = Resources.Load<AudioMixer>("Master");
         GameObject root = GameObject.Find("@Sound");

@@ -132,6 +132,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7326788115642392799, guid: e57b8250d7956a14f95abb79b49c946a,
+          type: 3}
+        m_MethodName: Panel_Set
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7273054511330017493
 MonoBehaviour:
   m_ObjectHideFlags: 0
