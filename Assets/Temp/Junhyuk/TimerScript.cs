@@ -51,6 +51,16 @@ public class TimerScript : BaseUI
             for (int i = 0; i < dif+1; i++)
             {
                 timeLeft -= p_time[Managers.Data.p_state - i];
+                //if(timeLeft < 0) //시간을 추가했을 때 Maxtime을 초과한다면 초과한 시간은 버림
+                //{
+                //    timeLeft = 0;
+                //}
+                if(timeLeft < 0) //시간을 추가했을 때 Maxtime을 초과해도 더 늘림
+                {
+                    MaxTime += (-timeLeft);
+                    timeLeft = 0;
+                }
+
                 Debug.Log(p_time[Managers.Data.p_state - i] + "초 추가!");
             }
             p_change_count = Managers.Data.p_state + 1;
