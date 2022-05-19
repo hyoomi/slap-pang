@@ -40,6 +40,7 @@ public class TimerScript : BaseUI
             if (check) return;
             check = true;
             base.ShowPopup(go);
+            Managers.Sound.GameEnd();
         }
     }
     void P_Addtime()  //p에 따른 시간 추가 함수
