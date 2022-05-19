@@ -44,7 +44,7 @@ public class Bomb : BallAndBomb
 
     public override void Explode()
     {
-		Managers.Action.ClickedBomb = this;
+		Managers.Action.ClickedBomb(this);
 		Space.ballCount--;		
 		Destroy(gameObject);	
 		Destroy(this);

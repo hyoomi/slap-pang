@@ -27,6 +27,6 @@ public class SceneManager
 
     public void Clear()
     {
-        CurrentScene.Clear();
+
     }
 }

@@ -22,23 +22,24 @@ public class Space : MonoBehaviour
     [SerializeField] public Transform[] allCells; // 총 80개의 cell
 
     public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
+    bool gameover;
 
     // ballsAction 구독 신청
     private void OnEnable()
     {
         Managers.Action.slideAction += LastChanceBomb;
-        Managers.Action.slideAction += ScoreBomb;
         Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
         Managers.Action.comboAction += ReduceBombTimer;
+        Managers.Action.sectionAction += SectionBomb;
     }
     private void OnDisable()
     {
         Managers.Action.slideAction -= LastChanceBomb;
-        Managers.Action.slideAction -= ScoreBomb;
         Managers.Action.ballsAction -= Spawn;
         Managers.Action.clickedBomb -= Bomb;
         Managers.Action.comboAction -= ReduceBombTimer;
+        Managers.Action.sectionAction -= SectionBomb;
     }
 
     // ballsAction 발생시 Spawn함수 실행
@@ -73,6 +74,7 @@ public class Space : MonoBehaviour
         ballCount = 0;
         Playtime = 30f;
         lastChanceBomb_count = 0;
+        gameover = false;
         //filled.Initialize();
         // 게임 시작시 구슬 두줄 배치
         for(int i = 0; i < COL * 2; i++)
@@ -90,6 +92,7 @@ public class Space : MonoBehaviour
     // 키를 입력받는다
     void Update()
     {
+        if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
         // 공 상태가 IDLE일때만 키보드 입력을 받는다
         if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
 
@@ -132,7 +135,12 @@ public class Space : MonoBehaviour
         // Cell이 꽉 찼으니 공을 스폰하지 않습니다
         if (ballCount >= allCells.Length)
         {
-            Debug.Log("모든 Cell이 꽉 찼습니다.");
+            if (!gameover) 
+            {
+                gameover = true;
+                Managers.UI.LoadUI<PopupUI>("GameoverPopup");
+            }
+             
             return;
         }
 
@@ -315,12 +323,14 @@ public class Space : MonoBehaviour
             }
 
             // 4콤보 이상일때
-            Managers.Data.Combo(popnumber);
+            Managers.Data.ExplodedSet(popnumber);
+            //Managers.Data.Combo(popnumber);
         }
         
         // 4 콤보 이상이면 공 터뜨리자
         int count = ballList.Count;
-        Managers.Data.COMBO = count;
+        Managers.Data.COMBO = count; // 콤보 이벤트 발생
+       
 
         for (int i = 0; i < count; i++)
         {
@@ -362,7 +372,11 @@ public class Space : MonoBehaviour
         // Cell이 꽉 찼으니 공을 스폰하지 않습니다
         if (ballCount >= allCells.Length)
         {
-            Debug.Log("모든 Cell이 꽉 찼습니다.");
+            if (!gameover)
+            {
+                gameover = true;
+                Managers.UI.LoadUI<PopupUI>("GameoverPopup");
+            }
             return;
         }
 
@@ -405,6 +419,7 @@ public class Space : MonoBehaviour
             time += 1f;
             if(Playtime <= 0f)
             {
+                Debug.Log(time + "초만에 TimeBomb 생성!");
                 SpawnBomb();
                 TimeBomb();
                 yield break;
@@ -419,12 +434,12 @@ public class Space : MonoBehaviour
     }
 
     // Last chance 폭탄
-    // 게임오버 직전: 게임칸 중 70개가 파괴되지 않고 남아있을때
-    // 2회 제공후에는 70개가 넘어도 Last Chance 폭탄은 제공되지 않는다.
+    // 게임오버 직전: 구슬이 80퍼 이상 찰 경우, [Todo]시간 초과할 경우..?
+    // 1회 제공후에 Last Chance 폭탄은 제공되지 않는다.
     static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 갯수
     public void LastChanceBomb(Define.SlideAction slide)
     { 
-        if (ballCount >= 70 && lastChanceBomb_count <= 1)
+        if (ballCount >= 64 && lastChanceBomb_count < 1)
         {
             SpawnBomb();
             lastChanceBomb_count++;
@@ -434,11 +449,9 @@ public class Space : MonoBehaviour
 
     // 점수에 따른 폭탄
     // 구간이 변할 때마다 폭탄 1개씩 추가
-    // 점수는 Manager.Data.score에 저장될 예정
-    // 구간은 하드코딩(숫자로) 해주세요
-    public void ScoreBomb(Define.SlideAction slide)
+    public void SectionBomb(int section)
     {
-
+        SpawnBomb();
     }
 
 
