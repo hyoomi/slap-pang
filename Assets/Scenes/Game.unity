@@ -441,12 +441,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1370749434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d7f7c60e9f44c04786a2eb7db081165, type: 3}
+  m_Script: {fileID: 11500000, guid: ac9f7142cc3c6af4fa9161eebcadf20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uiComponentPrefabs:
   - {fileID: 7459936061836949231, guid: aef2e074323be8649a0a9fa8b00b8999, type: 3}
-  - {fileID: 1549820566537353501, guid: 72d6aa425921c1347b7daf720670c8ae, type: 3}
   - {fileID: 7273054511330017502, guid: e0bd52e1ade99a940b123203f838909c, type: 3}
   - {fileID: 646422104625656167, guid: 7dc18b3f189f7e14598f3c21e81078f6, type: 3}
   - {fileID: 7871384664774741729, guid: a1f9bd17efc7fe64ca33e49b67797fef, type: 3}
+  - {fileID: 1549820566537353501, guid: 72d6aa425921c1347b7daf720670c8ae, type: 3}
