@@ -10,14 +10,18 @@ public class SoundManager
     public AudioMixer master;
 
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
-    Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>(); //효과음 로드시 성능 향상을 위해 dictionary를 사용한다고 합니다.
-    GameObject LobbyBGM;
+    AudioClip[] comboSounds = new AudioClip[4];
+    GameObject LobbyBGM, GameBGM, combo0, combo1, combo2, combo3;
 
-    //AudioSource LobbyBGM = Resources.Load<AudioSource>("Prefabs/LobbyBGM");
 
     public void Init()
     {
         LobbyBGM = Resources.Load<GameObject>("Prefabs/LobbyBGM");
+        GameBGM = Resources.Load<GameObject>("Prefabs/GameBGM");
+        combo0 = Resources.Load<GameObject>("Prefabs/combo_1");
+        combo1 = Resources.Load<GameObject>("Prefabs/combo_2");
+        combo2 = Resources.Load<GameObject>("Prefabs/combo_3");
+        combo3 = Resources.Load<GameObject>("Prefabs/combo_4");
         master = Resources.Load<AudioMixer>("Master");
         GameObject root = GameObject.Find("@Sound");
         if (root == null) 
@@ -32,11 +36,19 @@ public class SoundManager
                 _audioSources[i] = go.AddComponent<AudioSource>();
                 go.transform.parent = root.transform;
             }
+       
+        comboSounds[0] = combo0.GetComponent<AudioSource>().clip;
+        comboSounds[1] = combo1.GetComponent<AudioSource>().clip;
+        comboSounds[2] = combo2.GetComponent<AudioSource>().clip;
+        comboSounds[3] = combo3.GetComponent<AudioSource>().clip;
+        
 
-            _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
-            _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("Master")[0];
-            _audioSources[(int)Define.Sound.Bgm].loop = true; // bgm 재생기는 무한 반복 재생
-            _audioSources[(int)Define.Sound.Bgm].Play();
+        _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("BGM")[0];
+        _audioSources[(int)Define.Sound.Effect].outputAudioMixerGroup = master.FindMatchingGroups("Effect")[0];
+        _audioSources[(int)Define.Sound.Bgm].loop = true; // bgm 재생기는 무한 반복 재생
+        _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
+        _audioSources[(int)Define.Sound.Bgm].Play();
+
         }
     }
 
@@ -48,7 +60,6 @@ public class SoundManager
             audioSource.Stop();
         }
 
-        _audioClips.Clear(); //dictionary 제거
     }
 
     public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f) // 디폴트매개변수는 효과음
@@ -73,4 +84,16 @@ public class SoundManager
 			audioSource.PlayOneShot(audioClip);
 		}
 	}
+
+    public void PlaybyScene(){
+        if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Lobby){
+            _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
+            _audioSources[(int)Define.Sound.Bgm].Play();
+        }
+        else if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Game){
+            _audioSources[(int)Define.Sound.Bgm].clip = GameBGM.GetComponent<AudioSource>().clip;
+
+            _audioSources[(int)Define.Sound.Bgm].Play();
+        }
+    }
 }
