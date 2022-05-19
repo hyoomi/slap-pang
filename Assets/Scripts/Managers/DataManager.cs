@@ -103,37 +103,33 @@ public class DataManager
 
     public void Set_state_p() //p 상태 설정 
     {
-        if (score < 1000)
+        if (score < 10000)
         {
             p_state = 0;
         }
-        else if (score >= 1000 && score < 10000)
+        else if (score >= 10000 && score < 100000)
         {
             p_state = 1;
         }
-        else if (score >= 10000 && score < 100000)
+        else if (score >= 100000 && score < 1000000)
         {
             p_state = 2;
         }
-        else if (score >= 100000 && score < 1000000)
+        else if (score >= 1000000 && score < 10000000)
         {
             p_state = 3;
         }
-        else if (score >= 1000000 && score < 10000000)
+        else if (score >= 10000000 && score < 100000000)
         {
             p_state = 4;
         }
-        else if (score >= 10000000 && score < 100000000)
+        else if (score >= 100000000 && score < 1000000000)
         {
             p_state = 5;
         }
-        else if (score >= 100000000 && score < 1000000000)
+        else if (score >= 1000000000)
         {
             p_state = 6;
-        }
-        else
-        {
-            p_state = 7;
         }
     }
 
