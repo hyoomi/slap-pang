@@ -8,9 +8,10 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {   
     static Managers s_instance; // 유일성이 보장된다
-    static Managers Instance { get { return s_instance; } } // 유일한 매니저를 갖고온다
+    static Managers Instance { get { if(!gameStart) Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
     static Object _lock = new Object();
+    static bool gameStart = false;
 
     #region Instances
     DataManager _data = new DataManager();
@@ -38,6 +39,7 @@ public class Managers : MonoBehaviour
 
     static void Init()
     {
+        gameStart = true;
         if (s_instance == null)
         {
             lock (_lock)
