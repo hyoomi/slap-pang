@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class BallAndBomb : MonoBehaviour
 {
+	protected Animator _anim;
+
 	// 구슬의 상태를 표시합니다. Explode입력시 Explode()함수 실행
 	Define.BallState _state;
 	public Define.BallState State

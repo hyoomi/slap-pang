@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3611015980993598785}
   - component: {fileID: 4000026602408753269}
   - component: {fileID: 5546549043291132392}
+  - component: {fileID: 219575182760504200}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -149,3 +150,22 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+--- !u!95 &219575182760504200
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2321610250956719421}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a5db731358e769c4a94c1db36a5d163d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

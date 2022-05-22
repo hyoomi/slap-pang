@@ -25,11 +25,24 @@ public class Ball : BallAndBomb
 		_type = (Define.BallType)(random);		
 		State = Define.BallState.Idle;
 		GetComponent<Image>().sprite = images[(int)Type];
+		_anim = GetComponent<Animator>();
 	}
 
 	public override void Explode()
     {
 		Space.ballCount--;
+		_anim.enabled = true;
+		_anim.Play(Type.ToString());
+		StartCoroutine(DestroyBall());
+	}
+
+	// 애니메이션이 끝나면 Destroy
+	IEnumerator DestroyBall()
+    {
+		while(_anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        {
+			yield return null;
+        }
 		Destroy(gameObject);
 		Destroy(this);
 	}
