@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
@@ -7,7 +5,8 @@ using UnityEngine.Audio;
 public class Option : MonoBehaviour
 {
     public Slider slider;
-    
+    [SerializeField] Text bestScore;
+
     public void Panel_Set_Save(){ //옵션 저장할 때 Onclick에서 호출
         PlayerPrefs.Save();
         //Debug.Log(slider.value + "로 저장");
@@ -25,9 +24,9 @@ public class Option : MonoBehaviour
         PlayerPrefs.SetFloat("Volume", slider.value);
     }
 
-    void Start()
+    private void OnEnable()
     {
-        
+        bestScore.text = "최고 기록: " + Managers.Data.ColorScore(Managers.Data.BEST_SCORE) + "점";
     }
 
     void Update()

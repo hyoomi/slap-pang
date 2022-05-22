@@ -1,29 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-//----------삭제예정------------------//
-static class Constants //상수값들
-{
-    public const int n = 70; //기본점수
-    //구간별 p값
-    public const int p0 = 3; // ~1000점
-    public const int p1 = 10; // 1,000~10,000점
-    public const int p2 = 120; // 10,000~100,000점
-    public const int p3 = 240; // 100,000~1,000,000점
-    public const int p4 = 700; // 1,000,000~ 10,000,000점
-    public const int p5 = 1500; // 10,000,000~ 100,000,000점
-    public const int p6 = 3000; // 100,000,000 ~ 1,000,000,000점
-    public const int p7 = 10000; // 1,000,000,000점 ~   
-}
-
-// 최고기록을 저장하고 불러오는 Manager
+﻿// 최고기록을 저장하고 불러오는 Manager
 public class DataManager 
-{
+{    
     const int N = 70;
 
-    public ulong score; //-------삭제예정-----------//
-    public int p_state; 
+    public int p_state;
+
+    ulong _bestScore;
+    public ulong BEST_SCORE
+    {
+        get { return _bestScore; }
+        set
+        {
+            if(_bestScore < value)
+            {
+                _bestScore = value;
+                Bestscore.Save();
+            }
+        }
+    }
 
     // 콤보. 연속적으로 공이 터짐 (1부터 시작)
     int _combo;
@@ -51,7 +45,15 @@ public class DataManager
         set 
         {
             _score += value;
-            if (_score >= 999999999999999) { _score = 999999999999999; return; }               
+            if (_score >= 999999999999999) 
+            { 
+                _score = 999999999999999;
+                BEST_SCORE = _score;
+                return; 
+            }
+
+            BEST_SCORE = _score;
+
             if (_score < 1000)
                 Section = 0;
             else if (_score >= 1000 && _score < 10000)
@@ -93,7 +95,8 @@ public class DataManager
     // 초기화
     public void Init()
     {
-        score = 0;
+        _bestScore = 0;
+        BEST_SCORE = Bestscore.Load().bestScore;
         _combo = 0;
         _score = 0;
         _section = 0;
@@ -114,103 +117,36 @@ public class DataManager
             SCORE = tmpSCORE * 8;
     }
 
+    // 점수에 색깔 입히기
+    string[] colorCode = new string[] {
+        "<color=#0000CD>",
+        "<color=#006400>",
+        "<color=#FF8C00>",
+        "<color=#FFD700>",
+        "<color=#FF0000>",
+    };
+    string endCode = "</color>";
 
-    //----------------- 삭제예정--------------------------------------------------
-
-    // explode로 4, 5, 6, ... 값이 입력됨
-    // 몇 콤보인지 카운트하고 점수를 누적시키자 (기획ppt참고)
-    public void Combo(int explode)
+    public string ColorScore(ulong data)
     {
-        CalculateScore(FirstScore(explode));
-        Set_state_p();
-    }
-
-    public int FirstScore(int explode)
-    {
-        if (score < 1000)
-        { 
-            return explode * (explode - 3) * Constants.n * Constants.p0;
-        }
-        else if (score >= 1000 && score < 10000)
+        string colorText = (data == 0) ? "0" : string.Format($"{{0:#,#}}", data); // 1000단위로 콤마를 찍어 string으로 저장
+        colorText += endCode; // "890,123</color>"
+        int j = 0;  // 몇번째 컬러코드를 사용할지 체크하는 변수
+        for (int i = colorText.Length - 1; i >= 0; i--)  // 문자열 맨 뒤에서부터 검사
         {
-            return explode * (explode - 3) * Constants.n * Constants.p1;
+            if (colorText[i] == ',')  // 콤마를 발견했다면
+            {
+                if (j + 1 == colorCode.Length) { break; }
+                colorText = colorText.Insert(i + 1, colorCode[j++]);  //콤마뒤에 컬러코드 삽입 "890,<color=#0000CD>123</color>"
+                colorText = colorText.Insert(i + 1, endCode);  // 콤마뒤에 end코드 삽입 "890,</color><color=#0000CD>123</color>"       
+            }
         }
-        else if (score >= 10000 && score < 100000)
-        {
-            return explode * (explode - 3) * Constants.n * Constants.p2;
-        }
-        else if (score >= 100000 && score < 1000000)
-        { 
-            return explode * (explode - 3) * Constants.n * Constants.p3;
-        }
-        else if (score >= 1000000 && score < 10000000)
-        { 
-            return explode * (explode - 3) * Constants.n * Constants.p4;
-        }
-        else if (score >= 10000000 && score < 100000000)
-        {
-            return explode * (explode - 3) * Constants.n * Constants.p5;
-        }
-        else if (score >= 100000000 && score < 1000000000)
-        {
-            return explode * (explode - 3) * Constants.n * Constants.p6;
-        }
-        else
-        {
-            return explode * (explode - 3) * Constants.n * Constants.p7;
-        }
-    }
-
-    public void CalculateScore(int FirstScore)
-    {
-        Debug.Log("Cal Score: " + _combo);
-        if (_combo < 2)
-            score += (ulong)FirstScore;
-        else if (_combo == 2)
-            score += (ulong)(FirstScore * 50);
-        else if (_combo == 3)
-            score += (ulong)(FirstScore * 100);
-        else if (_combo == 4)
-            score += (ulong)(FirstScore * 200);
-        else if (_combo > 4)
-            score += (ulong)(FirstScore * 100 * (_combo + 1));        
-    }
-
-    public void Set_state_p() //p 상태 설정 
-    {
-        if (score < 10000)
-        {
-            p_state = 0;
-        }
-        else if (score >= 10000 && score < 100000)
-        {
-            p_state = 1;
-        }
-        else if (score >= 100000 && score < 1000000)
-        {
-            p_state = 2;
-        }
-        else if (score >= 1000000 && score < 10000000)
-        {
-            p_state = 3;
-        }
-        else if (score >= 10000000 && score < 100000000)
-        {
-            p_state = 4;
-        }
-        else if (score >= 100000000 && score < 1000000000)
-        {
-            p_state = 5;
-        }
-        else if (score >= 1000000000)
-        {
-            p_state = 6;
-        }
+        colorText = colorCode[j] + colorText;  // 가장 앞에 컬러코드 삽입 "<color=#006400>890,</color><color=#0000CD>123</color>" 
+        return colorText;
     }
 
     public void Clear()
     {
-        score = 0;
         _combo = 0;
         _score = 0;
         _section = 0;

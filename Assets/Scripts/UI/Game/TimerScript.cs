@@ -62,7 +62,7 @@ public class TimerScript : BaseUI
                     timeLeft = 0;
                 }
 
-                Debug.Log(p_time[Managers.Data.p_state - i] + "초 추가!");
+                //Debug.Log(p_time[Managers.Data.p_state - i] + "초 추가!");
             }
             p_change_count = Managers.Data.p_state + 1;
         }

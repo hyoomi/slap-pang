@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GameoverScript : PopupUI
 {
-    public void ReStartButton()
+    [SerializeField] Text bestScore;
+
+    public void OnEnable()
     {
-        Managers.Scene.LoadScene(Define.Scene.Game);
+        bestScore.text = Managers.Data.ColorScore(Managers.Data.SCORE) + "점!";
     }
 }

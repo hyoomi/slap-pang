@@ -69,7 +69,7 @@ public class BallAndBomb : MonoBehaviour
 	IEnumerator Lerp(Vector3 startPos)
 	{
 		State = Define.BallState.Move;
-		float lerpDuration = 0.1f;
+		float lerpDuration = 0.2f;
 		Vector3 startValue = startPos;
 		Vector3 endValue = Vector3.zero;
 		float timeElapsed = 0;
@@ -80,7 +80,7 @@ public class BallAndBomb : MonoBehaviour
 			yield return null;
 		}
 		transform.localPosition = Vector3.zero;
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(lerpDuration);
 
 		// 움직이지 않아도 되는 공때문에 다른 공이 도착하기 전에 실행됨
 		State = Define.BallState.Idle;

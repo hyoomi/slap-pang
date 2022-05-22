@@ -27,4 +27,16 @@ public class PopupUI : BaseUI
     {
         Time.timeScale = 1;
     }
+
+    // 게임 재시작
+    public void ReStartButton()
+    {
+        Managers.Scene.LoadScene(Define.Scene.Game);
+    }
+
+    // 게임 재시작
+    public void GoToLobbyButton()
+    {
+        Managers.Scene.LoadScene(Define.Scene.Lobby);
+    }
 }
