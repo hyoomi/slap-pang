@@ -31,6 +31,7 @@ public class Space : MonoBehaviour
         Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
         Managers.Action.comboAction += ReduceBombTimer;
+        Managers.Action.comboAction += Managers.Sound.comboSound;
         Managers.Action.sectionAction += SectionBomb;
     }
     private void OnDisable()
@@ -39,6 +40,7 @@ public class Space : MonoBehaviour
         Managers.Action.ballsAction -= Spawn;
         Managers.Action.clickedBomb -= Bomb;
         Managers.Action.comboAction -= ReduceBombTimer;
+        Managers.Action.comboAction -= Managers.Sound.comboSound;
         Managers.Action.sectionAction -= SectionBomb;
     }
 
