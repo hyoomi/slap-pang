@@ -147,7 +147,4 @@ public class SoundManager
         _audioSources[(int)Define.Sound.Effect].PlayOneShot(GameOver.GetComponent<AudioSource>().clip);
     }
 
-    private void Update() {
-        buttonSound();
-    }
 }

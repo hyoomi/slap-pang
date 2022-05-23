@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // 모든 Scene이 상속받을 class
@@ -9,6 +10,7 @@ using UnityEngine.EventSystems;
 public class BaseScene : MonoBehaviour
 {
     public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
+    public Button[] buttons;
 
     [SerializeField] public List<GameObject> uiComponentPrefabs = new List<GameObject>(); // Prefabs를 담아둘 List
     List<GameObject> uiComponents = new List<GameObject>(); // Prefabs를 Instantiate한 GameObjects를 담아둘 List
@@ -33,6 +35,20 @@ public class BaseScene : MonoBehaviour
 
     private void OnEnable() 
     {
-        Managers.Sound.PlaybyScene();        
+        Managers.Sound.PlaybyScene();
+        // buttons = gameObject.GetComponentsInChildren<Button>();
+        // foreach(Button button in buttons)
+        // {
+        //     button.onClick.AddListener(Managers.Sound.buttonSound);
+        // }
     }
+    
+    // private void Update()
+    // {
+    //     if(Input.GetMouseButtonDown(0))
+    //         if (EventSystem.current.currentSelectedGameObject.GetComponent<Button>())
+    //             Managers.Sound.buttonSound();
+    //         else
+    //             return;
+    // }
 }

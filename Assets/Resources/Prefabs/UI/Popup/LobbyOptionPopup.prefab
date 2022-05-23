@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 2173093020533311811}
   m_Layer: 5
   m_Name: OKButton
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 6544909121987136267}
   m_Layer: 5
   m_Name: TutorialButton
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
