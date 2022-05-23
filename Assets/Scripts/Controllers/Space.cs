@@ -24,9 +24,10 @@ public class Space : MonoBehaviour
     public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
     bool gameover;
 
-    // ballsAction 구독 신청
+    #region Unity
     private void OnEnable()
     {
+        Managers.Action.slideAction += Slide;
         Managers.Action.slideAction += LastChanceBomb;
         Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
@@ -34,6 +35,7 @@ public class Space : MonoBehaviour
         Managers.Action.comboAction += Managers.Sound.comboSound;
         Managers.Action.sectionAction += SectionBomb;
     }
+
     private void OnDisable()
     {
         Managers.Action.slideAction -= LastChanceBomb;
@@ -44,6 +46,48 @@ public class Space : MonoBehaviour
         Managers.Action.sectionAction -= SectionBomb;
     }
 
+    void Start()
+    {
+        //변수 초기화
+        COMBO = 4;
+        ballCount = 0;
+        Playtime = 30f;
+        lastChanceBomb_count = 0;
+        gameover = false;
+        //filled.Initialize();
+        // 게임 시작시 구슬 두줄 배치
+        for (int i = 0; i < COL * 2; i++)
+        {
+            ballCount++;
+
+            GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+            go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
+        }
+
+        //TimeBomb의 Timer 시작
+        TimeBomb();
+    }
+
+    void Update()
+    {
+        if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
+        // 공 상태가 IDLE일때만 키보드 입력을 받는다
+        if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
+            Managers.Action.SlideAction(Define.SlideDir.Up);
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+            Managers.Action.SlideAction(Define.SlideDir.Down);
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            Managers.Action.SlideAction(Define.SlideDir.Left);
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+            Managers.Action.SlideAction(Define.SlideDir.Right);
+        else
+            Managers.Action.SlideAction(Define.SlideDir.None);
+    }
+    #endregion
+
+
     // ballsAction 발생시 Spawn함수 실행
     void Spawn(Define.BallState ballsState)
     {
@@ -53,7 +97,7 @@ public class Space : MonoBehaviour
         {
             StartCoroutine(Spawn_and_Pop());
         }
-    }
+    }   
 
     // 공을 스폰하고 콤보를 터뜨린다
     IEnumerator Spawn_and_Pop()
@@ -68,69 +112,7 @@ public class Space : MonoBehaviour
 
         yield return null;
     }
-        
-    void Start()
-    {
-        //변수 초기화
-        COMBO = 4;
-        ballCount = 0;
-        Playtime = 30f;
-        lastChanceBomb_count = 0;
-        gameover = false;
-        //filled.Initialize();
-        // 게임 시작시 구슬 두줄 배치
-        for(int i = 0; i < COL * 2; i++)
-        {
-            ballCount++;
-
-            GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
-            go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
-        }
-
-        //TimeBomb의 Timer 시작
-        TimeBomb();
-    }
-
-    // 키를 입력받는다
-    void Update()
-    {
-        if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
-        // 공 상태가 IDLE일때만 키보드 입력을 받는다
-        if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
-
-        // 폭탄 생성하는 임시 코드
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnBomb();
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
-        {
-            SlideUp();
-            Managers.Action.Slide = Define.SlideAction.Up;
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            SlideDown();
-            Managers.Action.Slide = Define.SlideAction.Down;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            SlideLeft();
-            Managers.Action.Slide = Define.SlideAction.Left;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            SlideRight();
-            Managers.Action.Slide = Define.SlideAction.Right;
-        }
-        else
-        {
-            Managers.Action.Slide = Define.SlideAction.None;
-        }
-
-    }
-
+       
     // 공을 스폰합니다
     public void SpawnBall()
     {
@@ -165,6 +147,19 @@ public class Space : MonoBehaviour
         ballCount++; // 공 개수를 하나 늘립니다.
     }
 
+    public void Slide(Define.SlideDir slide)
+    {
+        switch (slide)
+        {
+            case Define.SlideDir.Up: SlideUp(); break;
+            case Define.SlideDir.Down: SlideDown(); break;
+            case Define.SlideDir.Left: SlideLeft(); break;
+            case Define.SlideDir.Right: SlideRight(); break;
+            case Define.SlideDir.None: break;
+        }
+    }
+
+    #region Find_Empty_Cell & Set_Parent
     // 위로 슬라이드 할 경우
     // 동작 원리: 가장 위에있는 빈칸을 선택. 그 빈칸의 아래 칸들을 쭉 살피다가 공이 들어있는 칸을 발견하면 그 공을 선택된 빈칸으로 옮겨준다
     // 빈칸을 위에서부터 아래로 검사해야만 위쪽에 있는 빈칸쪽으로 공을 모을 수 있다.
@@ -230,7 +225,9 @@ public class Space : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Find_First_Ball
     // 위로 슬라이드 할거니 아래쪽에 있는 가장 가까운 공 체크
     public int FindFirstBall_Up(int index)
     {
@@ -286,10 +283,10 @@ public class Space : MonoBehaviour
         }
         return -1;
     }
+    #endregion
 
     int popnumber = 0;
     Stack<Ball> ballList = new Stack<Ball>();
-
     
     public void Pop()
     { 
@@ -439,7 +436,7 @@ public class Space : MonoBehaviour
     // 게임오버 직전: 구슬이 80퍼 이상 찰 경우, [Todo]시간 초과할 경우..?
     // 1회 제공후에 Last Chance 폭탄은 제공되지 않는다.
     static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 갯수
-    public void LastChanceBomb(Define.SlideAction slide)
+    public void LastChanceBomb(Define.SlideDir slide)
     { 
         if (ballCount >= 64 && lastChanceBomb_count < 1)
         {

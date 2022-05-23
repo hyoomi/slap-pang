@@ -21,7 +21,7 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.2
+        time: 0.18333334
         value: 0.9568329
         inSlope: 0
         outSlope: 0
@@ -47,9 +47,9 @@ AnimationClip:
     script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_PPtrCurves:
   - curve:
-    - time: 0.083333336
+    - time: 0.05
       value: {fileID: 21300000, guid: b6d15cafa0de3154d854f3e220cbbb06, type: 3}
-    - time: 0.13333334
+    - time: 0.11666667
       value: {fileID: 21300000, guid: e44ca5abea257b441a5ad310faa4c3de, type: 3}
     attribute: m_Sprite
     path: 
@@ -104,7 +104,7 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.2
+        time: 0.18333334
         value: 0.9568329
         inSlope: 0
         outSlope: 0

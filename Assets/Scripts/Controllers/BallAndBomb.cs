@@ -59,9 +59,9 @@ public class BallAndBomb : MonoBehaviour
 		Managers.Action.slideAction -= OnSlide;
 	}
 	// 슬라이드 액션이 발생시 OnSlide함수 실행됨
-	void OnSlide(Define.SlideAction slideAction)
+	void OnSlide(Define.SlideDir slideAction)
 	{
-		if (slideAction == Define.SlideAction.None) return;
+		if (slideAction == Define.SlideDir.None) return;
 		State = Define.BallState.Move;
 		StartCoroutine(Lerp(transform.localPosition));
 	}

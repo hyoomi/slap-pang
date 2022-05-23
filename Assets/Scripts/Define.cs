@@ -30,13 +30,14 @@ public class Define
         Drag,
     }
 
-    public enum MoveDir
+    public enum GameState
     {
-        None,
-        Up,
-        Down,
-        Left,
-        Right
+        Idle,
+        Move,
+        Spawn,
+        Explode,
+        Destroy,
+        Gameover,
     }
 
     public enum BallState
@@ -47,7 +48,7 @@ public class Define
         Check,
     }
 
-    public enum SlideAction
+    public enum SlideDir
     {
         None,
         Up,
