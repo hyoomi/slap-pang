@@ -16,6 +16,12 @@ public class Define
     {
         Bgm,
         Effect,
+        Cup,
+        Glass,
+        Plant,
+        Plate,
+        Stone,
+        Combo
     }
 
     public enum UIEvent

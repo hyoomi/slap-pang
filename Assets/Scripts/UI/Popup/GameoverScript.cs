@@ -8,6 +8,12 @@ public class GameoverScript : PopupUI
 
     public void OnEnable()
     {
+        Managers.Sound.GameEnd();
         bestScore.text = Managers.Data.ColorScore(Managers.Data.SCORE) + "점!";
+    }
+
+    public void OnDisable()
+    {
+        Managers.Sound.Stop();
     }
 }

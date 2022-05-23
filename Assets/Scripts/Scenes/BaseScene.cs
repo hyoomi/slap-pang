@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -29,5 +29,10 @@ public class BaseScene : MonoBehaviour
     public virtual void Clear()
     {
 
+    }
+
+    private void OnEnable() 
+    {
+        Managers.Sound.PlaybyScene();        
     }
 }
