@@ -29,7 +29,7 @@ public class Space : MonoBehaviour
     {
         Managers.Action.slideAction += Slide;
         Managers.Action.slideAction += LastChanceBomb;
-        Managers.Action.ballsAction += Spawn;
+        //Managers.Action.ballsAction += Spawn;
         Managers.Action.clickedBomb += Bomb;
         Managers.Action.comboAction += ReduceBombTimer;
         Managers.Action.comboAction += Managers.Sound.comboSound;
@@ -38,8 +38,9 @@ public class Space : MonoBehaviour
 
     private void OnDisable()
     {
+        Managers.Action.slideAction -= Slide;
         Managers.Action.slideAction -= LastChanceBomb;
-        Managers.Action.ballsAction -= Spawn;
+        //Managers.Action.ballsAction -= Spawn;
         Managers.Action.clickedBomb -= Bomb;
         Managers.Action.comboAction -= ReduceBombTimer;
         Managers.Action.comboAction -= Managers.Sound.comboSound;
@@ -54,6 +55,7 @@ public class Space : MonoBehaviour
         Playtime = 30f;
         lastChanceBomb_count = 0;
         gameover = false;
+        
         //filled.Initialize();
         // 게임 시작시 구슬 두줄 배치
         for (int i = 0; i < COL * 2; i++)
@@ -64,15 +66,16 @@ public class Space : MonoBehaviour
             go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
         }
 
+        Managers.Action.GameState = Define.GameState.Idle;
         //TimeBomb의 Timer 시작
         TimeBomb();
     }
 
     void Update()
     {
-        if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
+        //if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
         // 공 상태가 IDLE일때만 키보드 입력을 받는다
-        if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
+        //if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
 
         if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
             Managers.Action.SlideAction(Define.SlideDir.Up);
@@ -121,8 +124,7 @@ public class Space : MonoBehaviour
         {
             if (!gameover) 
             {
-                gameover = true;
-                Managers.UI.LoadUI<PopupUI>("GameoverPopup");
+                gameover = true;               
             }
              
             return;
@@ -149,6 +151,10 @@ public class Space : MonoBehaviour
 
     public void Slide(Define.SlideDir slide)
     {
+        if (Managers.Action.GameState != Define.GameState.Idle) return;
+
+        Managers.Action.GameState = Define.GameState.Move;
+
         switch (slide)
         {
             case Define.SlideDir.Up: SlideUp(); break;
@@ -156,6 +162,31 @@ public class Space : MonoBehaviour
             case Define.SlideDir.Left: SlideLeft(); break;
             case Define.SlideDir.Right: SlideRight(); break;
             case Define.SlideDir.None: break;
+        }
+
+        StartCoroutine(ExplodeAndSpawn());
+    }
+
+    IEnumerator ExplodeAndSpawn()
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        Managers.Action.GameState = Define.GameState.Spawn;
+        SpawnBall();
+        SpawnBall();
+        SpawnBall();
+        SpawnBall();
+        yield return new WaitForFixedUpdate();
+        
+        Managers.Action.GameState = Define.GameState.Explode;
+        Pop();
+        yield return new WaitForSeconds(0.2f);
+        Managers.Action.GameState = Define.GameState.Idle;
+
+        if (gameover)
+        {
+            Managers.UI.LoadUI<PopupUI>("GameoverPopup");
+            Time.timeScale = 0;
         }
     }
 
@@ -172,7 +203,7 @@ public class Space : MonoBehaviour
                 int firstBall = FindFirstBall_Up(j);
                 if (firstBall != -1) // 공이 들어있는 Cell의 인덱스를 발견했다면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().Move(allCells[j], j);
 
                 }
             }
@@ -189,7 +220,7 @@ public class Space : MonoBehaviour
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().Move(allCells[j], j);
                 }
             }
         }
@@ -204,7 +235,7 @@ public class Space : MonoBehaviour
                 int firstBall = FindFirstBall_Left(j);
                 if (firstBall != -1) // 공 발견하면
                 {    
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().Move(allCells[j], j);
                 }
             }
         }
@@ -220,7 +251,7 @@ public class Space : MonoBehaviour
 
                 if (firstBall != -1) // 공 발견하면
                 {
-                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().SetParent(allCells[j], j);
+                    allCells[firstBall].GetComponentInChildren<BallAndBomb>().Move(allCells[j], j);
                 }
             }
         }
@@ -287,23 +318,23 @@ public class Space : MonoBehaviour
 
     int popnumber = 0;
     Stack<Ball> ballList = new Stack<Ball>();
-    
+
     public void Pop()
-    { 
+    {
         // 모든 셀 콤보 검사
         for (int i = 0; i < allCells.Length; i++)
         {
             Ball ball = allCells[i].GetComponentInChildren<Ball>();
             if (ball == null) continue;
             if (ball.State == Define.BallState.Check) continue;
-           
+
             popnumber = 1;
             ball.State = Define.BallState.Check;
             ballList.Push(ball); // 1 콤보 ball 저장
 
             // 왼오위아래 공이랑 같은 타입인지 체크 (콤보 측정중)
             if ((i - 1) % COL != COL - 1) // 이전줄로 올라가는거 방지
-                PopBall(i - 1, ball.Type); 
+                PopBall(i - 1, ball.Type);
             if ((i + 1) % COL != 0) // 다음줄로 넘어가는거 방지
                 PopBall(i + 1, ball.Type);
             PopBall(i - COL, ball.Type);
@@ -316,7 +347,7 @@ public class Space : MonoBehaviour
             {
                 for (int j = 0; j < popnumber; j++)
                 {
-                    ballList.Pop();             
+                    ballList.Pop();
                 }
                 continue;
             }
@@ -325,18 +356,27 @@ public class Space : MonoBehaviour
             Managers.Data.ExplodedSet(popnumber);
             //Managers.Data.Combo(popnumber);
         }
-        
+
         // 4 콤보 이상이면 공 터뜨리자
         int count = ballList.Count;
         Managers.Data.COMBO = count; // 콤보 이벤트 발생
-       
+
 
         for (int i = 0; i < count; i++)
         {
             Ball ball = ballList.Pop();
-            ball.State = Define.BallState.Explode;                               
+            ball.State = Define.BallState.Explode;
         }
-   
+
+        // 모든 셀 상태 초기화
+        for (int i = 0; i < allCells.Length; i++)
+        {
+            Ball ball = allCells[i].GetComponentInChildren<Ball>();
+            if (ball == null) continue;
+            if (ball.State == Define.BallState.Check)
+                ball.State = Define.BallState.Idle;
+
+        }
     }
     
     // index의 콤보 검사하는 함수
@@ -371,11 +411,6 @@ public class Space : MonoBehaviour
         // Cell이 꽉 찼으니 공을 스폰하지 않습니다
         if (ballCount >= allCells.Length)
         {
-            if (!gameover)
-            {
-                gameover = true;
-                Managers.UI.LoadUI<PopupUI>("GameoverPopup");
-            }
             return;
         }
 

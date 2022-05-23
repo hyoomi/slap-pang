@@ -12,7 +12,20 @@ public class ActionManager
 	public Action<int> comboAction; // 콤보를 알리는 액션
 	public Action<int> sectionAction; // 구간 변화를 알리는 액션
 
-	public void StateAction(Define.GameState state)
+	Define.GameState _gameState;
+	public Define.GameState GameState
+    {
+		get { return _gameState; }
+		set 
+		{
+			if (_gameState == value)
+				return;
+			_gameState = value;
+		}
+    }
+
+
+    public void StateAction(Define.GameState state)
     {
 		stateAction?.Invoke(state);
 	}
