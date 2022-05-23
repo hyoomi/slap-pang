@@ -15,9 +15,10 @@ public class GameStart_3 : BaseUI
 
     // Start is called before the first frame update 
     [SerializeField]
-    public float sec = 2.0f;
-    public Text GameStartText; 
+    public float sec = 2.0f; 
     public GameObject GameStart;
+    // sec가 지나면 StartImage에 넣어둔 Sprite로 변경되도록 하였습니다.
+    public Sprite StartImage;
     
 
     void Start()
@@ -28,7 +29,7 @@ public class GameStart_3 : BaseUI
     IEnumerator StartPrint(float sec)
     {
         yield return new WaitForSeconds(sec);
-        GameStartText.text = "START";
+        GetComponent<Image>().sprite = StartImage;
 
         //wait for another sec and then Close "Start" UI 
         Coroutine CloseStart = StartCoroutine(CloseStartUI(sec));
