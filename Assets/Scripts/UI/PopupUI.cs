@@ -18,7 +18,7 @@ public class PopupUI : BaseUI
         Destroy(gameObject);
     }
 
-    private void OnEnable()
+    public void Awake()
     {
         Time.timeScale = 0;
     }

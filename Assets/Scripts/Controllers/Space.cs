@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +14,7 @@ public class Space : MonoBehaviour
     const int COL = 8; //(세로 8줄) 
     const int DEF_CHILD = 0; // Cell의 기본 자식 수
     int COMBO = 4; // 4콤보 이상이면 터뜨린다. 
-    int error = 0; // 무한루프 방지 임지 변수
+    int error = 0; // 무한루프 방지 임시 변수
 
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
@@ -27,24 +26,22 @@ public class Space : MonoBehaviour
     #region Unity
     private void OnEnable()
     {
-        Managers.Action.slideAction += Slide;
-        Managers.Action.slideAction += LastChanceBomb;
-        //Managers.Action.ballsAction += Spawn;
-        Managers.Action.clickedBomb += Bomb;
+        Managers.Action.slideAction += OnSlide;
         Managers.Action.comboAction += ReduceBombTimer;
-        Managers.Action.comboAction += Managers.Sound.comboSound;
+        Managers.Action.slideAction += LastChanceBomb;
         Managers.Action.sectionAction += SectionBomb;
+        Managers.Action.clickedBomb += ExplodeBomb;       
+        Managers.Action.comboAction += Managers.Sound.comboSound;      
     }
 
     private void OnDisable()
     {
-        Managers.Action.slideAction -= Slide;
-        Managers.Action.slideAction -= LastChanceBomb;
-        //Managers.Action.ballsAction -= Spawn;
-        Managers.Action.clickedBomb -= Bomb;
+        Managers.Action.slideAction -= OnSlide;
         Managers.Action.comboAction -= ReduceBombTimer;
-        Managers.Action.comboAction -= Managers.Sound.comboSound;
+        Managers.Action.slideAction -= LastChanceBomb;
         Managers.Action.sectionAction -= SectionBomb;
+        Managers.Action.clickedBomb -= ExplodeBomb;       
+        Managers.Action.comboAction -= Managers.Sound.comboSound;       
     }
 
     void Start()
@@ -55,8 +52,8 @@ public class Space : MonoBehaviour
         Playtime = 30f;
         lastChanceBomb_count = 0;
         gameover = false;
-        
-        //filled.Initialize();
+        _gameState = Define.GameState.Idle;
+
         // 게임 시작시 구슬 두줄 배치
         for (int i = 0; i < COL * 2; i++)
         {
@@ -65,19 +62,75 @@ public class Space : MonoBehaviour
             GameObject go = Instantiate(ballPrefab, allCells[allCells.Length - 1 - i]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
             go.GetComponent<BallAndBomb>().CellIndex = allCells.Length - 1 - i;
         }
-
-        Managers.Action.GameState = Define.GameState.Idle;
-        //TimeBomb의 Timer 시작
-        TimeBomb();
+        
+        TimeBomb();  //TimeBomb의 Timer 시작
     }
 
     void Update()
     {
-        //if (ballCount < 1) Managers.Action.BallsAction = Define.BallState.Idle;
-        // 공 상태가 IDLE일때만 키보드 입력을 받는다
-        //if (Managers.Action.BallsAction == Define.BallState.Move) { return; }
+        UpdateController();
+    }
+    #endregion
 
-        if (Input.GetKeyDown(KeyCode.UpArrow)) // 위 화살표 누르면 Up 슬라이드로 간주
+
+    #region Game_State_Control
+
+    // GameState 상태도
+    // Idle (GetInput)
+    // Move -> Idle (SpawnFourBall) -> Spawn
+    // Spawn -> Explode (ExplodeBall)
+    // Explode -> Idle (Gameover || GetInput)
+    //  Move판정은 OnSlide함수 내부에 존재함
+
+    Define.GameState _pastState = Define.GameState.Idle;
+    Define.GameState _gameState = Define.GameState.Idle;
+    void UpdateController()
+    {
+        _pastState = _gameState;
+
+        if (_pastState == Define.GameState.Idle)
+        {
+            GetInput();
+        }
+        else if(_pastState == Define.GameState.Move)
+        {           
+            _gameState = CheckGameState();
+            if(_gameState == Define.GameState.Idle)
+            {
+                SpawnFourBall();
+                _gameState = Define.GameState.Spawn;
+            }
+        }
+        else if (_pastState == Define.GameState.Spawn)
+        {           
+            ExplodeBall();
+            _gameState = Define.GameState.Explode;
+        }
+        else if (_pastState == Define.GameState.Explode)
+        {
+            _gameState = CheckGameState();
+
+            if (_gameState == Define.GameState.Idle)
+            {
+                if (gameover)
+                {
+                    Managers.UI.LoadUI<PopupUI>("GameoverPopup");
+                    _gameState = Define.GameState.Gameover;
+                    return;
+                }
+                GetInput();
+            }
+        }
+        else if (_pastState == Define.GameState.Gameover)
+        {            
+            return;
+        }
+    }
+
+    // 키보드를 입력받는 함수
+    void GetInput()
+    {       
+        if (Input.GetKeyDown(KeyCode.UpArrow))
             Managers.Action.SlideAction(Define.SlideDir.Up);
         else if (Input.GetKeyDown(KeyCode.DownArrow))
             Managers.Action.SlideAction(Define.SlideDir.Down);
@@ -88,109 +141,73 @@ public class Space : MonoBehaviour
         else
             Managers.Action.SlideAction(Define.SlideDir.None);
     }
+
+    // GameState를 체크하는 함수
+    Define.GameState CheckGameState()
+    {
+        for(int i = 0; i < allCells.Length; i++)
+        {
+            Ball ball = allCells[i].GetComponentInChildren<Ball>();
+            if (ball == null) continue;
+            if (ball.State == Define.BallState.Move) return Define.GameState.Move;
+            if (ball.State == Define.BallState.Explode) return Define.GameState.Explode;
+        }
+
+        return Define.GameState.Idle;
+    }
     #endregion
 
-
-    // ballsAction 발생시 Spawn함수 실행
-    void Spawn(Define.BallState ballsState)
+    public void SpawnFourBall()
     {
-        // Idle 상태로 변했다면 Spawn_and_Pop 코루틴 실행
-        // (Idle상태로 변하는 경우는 Move가 완료된 이후 뿐이다)
-        if (ballsState == Define.BallState.Idle)
-        {
-            StartCoroutine(Spawn_and_Pop());
-        }
-    }   
-
-    // 공을 스폰하고 콤보를 터뜨린다
-    IEnumerator Spawn_and_Pop()
-    {
-        // Spawn->Pop or Pop->Spawn ?
         SpawnBall();
         SpawnBall();
         SpawnBall();
         SpawnBall();
-        yield return new WaitForSeconds(0.1f);
-        Pop();
-
-        yield return null;
     }
-       
-    // 공을 스폰합니다
+
+    // 공 스폰
     public void SpawnBall()
-    {
-        // Cell이 꽉 찼으니 공을 스폰하지 않습니다
-        if (ballCount >= allCells.Length)
+    {        
+        if (ballCount >= allCells.Length)  // Cell이 꽉 찼으니 공을 스폰하지 않습니다
         {
-            if (!gameover) 
-            {
-                gameover = true;               
-            }
-             
+            if (!gameover)
+            { gameover = true;  }             
             return;
         }
 
-        int spawnCell; // 공을 스폰할 Cell index를 받는 변수
-
-        // 비어있는 cell을 찾을 때까지 while문을 돌립니다
-        while (true)
-        {
-            
+        int spawnCell; // 공을 스폰할 Cell index를 받는 변수       
+        while (true)  // 비어있는 cell을 찾을 때까지 while문을 돌립니다
+        {            
             spawnCell = UnityEngine.Random.Range(0, allCells.Length); // 0~80사이의 랜덤값 추출
             if (allCells[spawnCell].childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
-            {
                 break;
-            }
-            if (++error > 10000000) { Debug.Log(ballCount + "Cell error");  error = 0; ballCount = allCells.Length; return; }
+            if (++error > 10000000)  // 무한루프 error 처리
+            { 
+                Debug.Log(ballCount + "Cell error");  
+                error = 0; ballCount = allCells.Length;
+                _gameState = Define.GameState.Idle; // <-- 테스트 필요
+                return; }
         }
 
-        GameObject go = Instantiate(ballPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
+        GameObject go = Instantiate(ballPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball instantiate
         go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++; // 공 개수를 하나 늘립니다.
     }
 
-    public void Slide(Define.SlideDir slide)
+    // 슬라이드 액션을 인식
+    public void OnSlide(Define.SlideDir slide)
     {
-        if (Managers.Action.GameState != Define.GameState.Idle) return;
-
-        Managers.Action.GameState = Define.GameState.Move;
-
+        _gameState = Define.GameState.Move;
         switch (slide)
         {
             case Define.SlideDir.Up: SlideUp(); break;
             case Define.SlideDir.Down: SlideDown(); break;
             case Define.SlideDir.Left: SlideLeft(); break;
             case Define.SlideDir.Right: SlideRight(); break;
-            case Define.SlideDir.None: break;
-        }
-
-        StartCoroutine(ExplodeAndSpawn());
-    }
-
-    IEnumerator ExplodeAndSpawn()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        Managers.Action.GameState = Define.GameState.Spawn;
-        SpawnBall();
-        SpawnBall();
-        SpawnBall();
-        SpawnBall();
-        yield return new WaitForFixedUpdate();
-        
-        Managers.Action.GameState = Define.GameState.Explode;
-        Pop();
-        yield return new WaitForSeconds(0.2f);
-        Managers.Action.GameState = Define.GameState.Idle;
-
-        if (gameover)
-        {
-            Managers.UI.LoadUI<PopupUI>("GameoverPopup");
-            Time.timeScale = 0;
         }
     }
 
-    #region Find_Empty_Cell & Set_Parent
+    #region Move_Ball
     // 위로 슬라이드 할 경우
     // 동작 원리: 가장 위에있는 빈칸을 선택. 그 빈칸의 아래 칸들을 쭉 살피다가 공이 들어있는 칸을 발견하면 그 공을 선택된 빈칸으로 옮겨준다
     // 빈칸을 위에서부터 아래로 검사해야만 위쪽에 있는 빈칸쪽으로 공을 모을 수 있다.
@@ -256,9 +273,7 @@ public class Space : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Find_First_Ball
     // 위로 슬라이드 할거니 아래쪽에 있는 가장 가까운 공 체크
     public int FindFirstBall_Up(int index)
     {
@@ -316,10 +331,11 @@ public class Space : MonoBehaviour
     }
     #endregion
 
+    #region Explode_Ball
     int popnumber = 0;
     Stack<Ball> ballList = new Stack<Ball>();
 
-    public void Pop()
+    public void ExplodeBall()
     {
         // 모든 셀 콤보 검사
         for (int i = 0; i < allCells.Length; i++)
@@ -334,53 +350,46 @@ public class Space : MonoBehaviour
 
             // 왼오위아래 공이랑 같은 타입인지 체크 (콤보 측정중)
             if ((i - 1) % COL != COL - 1) // 이전줄로 올라가는거 방지
-                PopBall(i - 1, ball.Type);
+                CheckBall(i - 1, ball.Type);
             if ((i + 1) % COL != 0) // 다음줄로 넘어가는거 방지
-                PopBall(i + 1, ball.Type);
-            PopBall(i - COL, ball.Type);
-            PopBall(i + COL, ball.Type);
-
-            //Debug.Log(i + "의 콤보는 " + popnumber);
+                CheckBall(i + 1, ball.Type);
+            CheckBall(i - COL, ball.Type);
+            CheckBall(i + COL, ball.Type);
 
             // 4 콤보 미만이면 stack에서 pop 시킨다
             if (popnumber < COMBO && ballList.Count > 0)
             {
                 for (int j = 0; j < popnumber; j++)
-                {
                     ballList.Pop();
-                }
                 continue;
             }
 
             // 4콤보 이상일때
             Managers.Data.ExplodedSet(popnumber);
-            //Managers.Data.Combo(popnumber);
         }
-
-        // 4 콤보 이상이면 공 터뜨리자
+       
         int count = ballList.Count;
         Managers.Data.COMBO = count; // 콤보 이벤트 발생
 
-
+        // 스택에 쌓인 공 터뜨리기
         for (int i = 0; i < count; i++)
         {
             Ball ball = ballList.Pop();
             ball.State = Define.BallState.Explode;
         }
 
-        // 모든 셀 상태 초기화
+        // check 초기화
         for (int i = 0; i < allCells.Length; i++)
         {
             Ball ball = allCells[i].GetComponentInChildren<Ball>();
             if (ball == null) continue;
-            if (ball.State == Define.BallState.Check)
-                ball.State = Define.BallState.Idle;
+            if (ball.State == Define.BallState.Check) ball.State = Define.BallState.Idle;
 
         }
     }
-    
-    // index의 콤보 검사하는 함수
-    public void PopBall(int index, Define.BallType type)
+
+        // index의 콤보 검사하는 함수
+        public void CheckBall(int index, Define.BallType type)
     {
         if (index < 0 || index >= allCells.Length)
             return;
@@ -398,13 +407,15 @@ public class Space : MonoBehaviour
 
         // 왼오위아래 공 콤보 검사
         if ((index - 1) % COL != COL - 1) // 이전줄로 올라가는거 방지
-            PopBall(index - 1, type);
+            CheckBall(index - 1, type);
         if ((index + 1) % COL != 0) // 다음줄로 넘어가는거 방지
-            PopBall(index + 1, type);
-        PopBall(index - COL, type);
-        PopBall(index + COL, type);                   
+            CheckBall(index + 1, type);
+        CheckBall(index - COL, type);
+        CheckBall(index + COL, type);                   
     }
+    #endregion
 
+    #region Bomb
     // 폭탄을 스폰해주는 임시 함수
     public void SpawnBomb()
     {
@@ -432,11 +443,11 @@ public class Space : MonoBehaviour
         ballCount++;
     }
 
-
+    #region Bomb_Type
     // 시간에 따른 폭탄
-    // 30초가 지나면 다음번 슬라이드 때 폭탄 생성 (코루틴 사용할 것)
-    // 2콤보 이상부터는 콤보당 -5초씩 (Manager.Data.combo에 몇콤보인지 저장될 예정)
-    public float Playtime = 30f;
+    // 30초가 지나면 다음번 슬라이드 때 폭탄 생성
+    // 2콤보 이상부터는 콤보당 -5초씩
+    float Playtime = 30f;
     public void TimeBomb()
     {
         StartCoroutine(SpawnbombDelay());
@@ -453,7 +464,7 @@ public class Space : MonoBehaviour
             time += 1f;
             if(Playtime <= 0f)
             {
-                Debug.Log(time + "초만에 TimeBomb 생성!");
+                //Debug.Log(time + "초만에 TimeBomb 생성!");
                 SpawnBomb();
                 TimeBomb();
                 yield break;
@@ -487,13 +498,14 @@ public class Space : MonoBehaviour
     {
         SpawnBomb();
     }
-
+    #endregion
 
     // 클릭한 폭탄이 터지는 함수
-    public void Bomb(Bomb bomb)
+    public void ExplodeBomb(Bomb bomb)
     {
         int index = bomb.CellIndex;
         int tmp;
+
         // 주변 반경 2칸 폭발
         if (bomb.Type == Define.BombType.Near)
         {
@@ -531,6 +543,7 @@ public class Space : MonoBehaviour
                     bb.State = Define.BallState.Explode;
             }
         }
+
         // 같은 종료 폭탄 폭발
         else if(bomb.Type == Define.BombType.Same)
         {
@@ -542,6 +555,7 @@ public class Space : MonoBehaviour
                     ball.State = Define.BallState.Explode;
             }
         }
+
         // 가로 한줄 폭발
         else if (bomb.Type == Define.BombType.LeftRight)
         {
@@ -566,6 +580,7 @@ public class Space : MonoBehaviour
                     bb.State = Define.BallState.Explode;
             }
         }
+
         // 세로 한줄 폭발
         else if (bomb.Type == Define.BombType.UpDown)
         {
@@ -588,4 +603,5 @@ public class Space : MonoBehaviour
             }
         }
     }
+    #endregion
 }

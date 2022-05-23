@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-// enum을 모아놓은 class. ex) Define.Scene
+﻿// enum을 모아놓은 class. ex) Define.Scene
 public class Define
 {
     public enum Scene
@@ -36,7 +32,6 @@ public class Define
         Move,
         Spawn,
         Explode,
-        Destroy,
         Gameover,
     }
 

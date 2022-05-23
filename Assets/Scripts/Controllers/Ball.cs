@@ -23,7 +23,7 @@ public class Ball : BallAndBomb
 	{
 		int random = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(Define.BallType)).Length);
 		_type = (Define.BallType)(random);		
-		State = Define.BallState.Idle;
+		_state = Define.BallState.Idle;
 		GetComponent<Image>().sprite = images[(int)Type];
 		_anim = GetComponent<Animator>();
 	}

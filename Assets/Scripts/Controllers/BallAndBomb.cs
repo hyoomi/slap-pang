@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BallAndBomb : MonoBehaviour
 {
-	public const float MOVE_SPEED = 0.2f;
+	public const float MOVE_SPEED = 0.1f;
 	protected Animator _anim;
 
 	// 구슬의 상태를 표시합니다. Explode입력시 Explode()함수 실행
-	Define.BallState _state;
+	protected Define.BallState _state;
 	public Define.BallState State
 	{
 		get { return _state; }
@@ -19,14 +18,13 @@ public class BallAndBomb : MonoBehaviour
 				return;
 
 			_state = value;
-			Managers.Action.BallsAction = _state;
 			if (_state == Define.BallState.Explode)
 				Explode();
 		}
 	}
 
 	// Cell index를 저장 
-	int _cellIndex;
+	protected int _cellIndex;
 	public int CellIndex
 	{
 		get
