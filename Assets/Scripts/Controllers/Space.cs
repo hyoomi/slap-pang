@@ -192,6 +192,7 @@ public class Space : MonoBehaviour
         GameObject go = Instantiate(ballPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball instantiate
         go.GetComponent<BallAndBomb>().CellIndex = spawnCell;
         ballCount++; // 공 개수를 하나 늘립니다.
+        
     }
 
     // 슬라이드 액션을 인식
@@ -497,6 +498,8 @@ public class Space : MonoBehaviour
     public void SectionBomb(int section)
     {
         SpawnBomb();
+        Debug.Log("section bomb");
+
     }
     #endregion
 
