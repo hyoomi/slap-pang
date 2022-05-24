@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UIManager
 {
     int _order = 10;
+    public Button[] buttons;
 
     // @UI 오브젝트를 만들고 UIManager가 들고 있는다(유일성 보장)
     public GameObject Root
@@ -91,6 +92,12 @@ public class UIManager
         // 혹시 오브젝트에 BaseUI.cs가 안붙어 있다면 붙여준다
         if (go.GetComponent<BaseUI>() == null)
             go.AddComponent<BaseUI>();
+        
+        buttons = go.GetComponentsInChildren<Button>(true); //모든 버튼의 onClick에 버튼 효과음을 붙여주는 부분
+        foreach(Button button in buttons)
+        {
+            button.onClick.AddListener(Managers.Sound.buttonSound);
+        }
 
         return go;
     }
