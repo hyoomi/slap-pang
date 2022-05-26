@@ -19,6 +19,18 @@ public class ActionManager
 		}
     }
 
+	Define.GameState _pastState;
+	public Define.GameState PastState
+	{
+		get { return _pastState; }
+		set
+		{
+			if (_pastState == value)
+				return;
+			_pastState = value;
+		}
+	}
+
 	public void SlideAction(Define.SlideDir slide)
     {
 		// 슬라이드가 입력됐을 때, None이 아니라면 Action 발생

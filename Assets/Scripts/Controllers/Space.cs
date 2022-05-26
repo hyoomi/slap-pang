@@ -2,26 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// (0) 슬라이드가 입력되면 -- Update();
-// (1) ball 부모 바꿔주기 -- SlideUp();
-// (2) 슬라이드 Action발생 (Ball 움직이기) -- Managers.Action.Slide = Define.SlideAction.Up;  
-// (3) 새로운 ball 스폰 -- SpawnBall();
-// (4) Ball.State==Explode체크하고 Ball 콤보 터뜨리기 -- Pop();
-
 public class Space : MonoBehaviour
 {
-    const int ROW = 10; //(가로 10줄)
-    const int COL = 8; //(세로 8줄) 
-    const int DEF_CHILD = 0; // Cell의 기본 자식 수
-    int COMBO = 4; // 4콤보 이상이면 터뜨린다. 
-    int error = 0; // 무한루프 방지 임시 변수
-
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
     [SerializeField] public Transform[] allCells; // 총 80개의 cell
 
+    const int ROW = 10; // 가로 10줄
+    const int COL = 8; // 세로 8줄
+    const int DEF_CHILD = 0; // Cell의 기본 자식 수
+    int COMBO = 4; // 4콤보 이상이면 터뜨린다. 
+
+    int error = 0; // 무한루프 방지 임시 변수
+    bool gameover; // 게임오버 체크하는 변수
+
     public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
-    bool gameover;
+    
 
     #region Unity
     private void OnEnable()
@@ -54,7 +50,6 @@ public class Space : MonoBehaviour
         Playtime = 30f;
         lastChanceBomb_count = 0;
         gameover = false;
-        _gameState = Define.GameState.Idle;
 
         // 게임 시작시 구슬 두줄 배치
         for (int i = 0; i < COL * 2; i++)
@@ -79,52 +74,54 @@ public class Space : MonoBehaviour
 
     // GameState 상태도
     // Idle (GetInput)
-    // Move -> Idle (SpawnFourBall) -> Spawn
-    // Spawn -> Explode (ExplodeBall)
-    // Explode -> Idle (Gameover || GetInput)
+    // Move (CheckGameState) -> Idle (SpawnFourBall) -> Spawn
+    // Spawn (ExplodeBall) -> Explode 
+    // Explode (CheckGameState) -> Idle (Gameover || GetInput)
     //  Move판정은 OnSlide함수 내부에 존재함
 
-    Define.GameState _pastState = Define.GameState.Idle;
-    Define.GameState _gameState = Define.GameState.Idle;
     void UpdateController()
     {
-        _pastState = _gameState;
+        Managers.Data.PastState = Managers.Data.GameState;
 
-        if (_pastState == Define.GameState.Idle)
+        if (Managers.Data.PastState == Define.GameState.Idle)
         {
             GetInput();
         }
-        else if(_pastState == Define.GameState.Move)
-        {           
-            _gameState = CheckGameState();
-            if(_gameState == Define.GameState.Idle)
+        else if(Managers.Data.PastState == Define.GameState.Move)
+        {
+            Managers.Data.GameState = CheckGameState();
+            if(Managers.Data.GameState == Define.GameState.Idle)
             {
                 SpawnFourBall();
-                _gameState = Define.GameState.Spawn;
+                Managers.Data.GameState = Define.GameState.Spawn;
             }
         }
-        else if (_pastState == Define.GameState.Spawn)
+        else if (Managers.Data.PastState == Define.GameState.Spawn)
         {           
             ExplodeBall();
-            _gameState = Define.GameState.Explode;
+            Managers.Data.GameState = Define.GameState.Explode;
         }
-        else if (_pastState == Define.GameState.Explode)
+        else if (Managers.Data.PastState == Define.GameState.Explode)
         {
-            _gameState = CheckGameState();
+            Managers.Data.GameState = CheckGameState();
 
-            if (_gameState == Define.GameState.Idle)
+            if (Managers.Data.GameState == Define.GameState.Idle)
             {
                 if (gameover)
                 {
                     Managers.UI.LoadUI<PopupUI>("GameoverPopup");
-                    _gameState = Define.GameState.Gameover;
+                    Managers.Data.GameState = Define.GameState.Gameover;
                     return;
                 }
                 GetInput();
             }
         }
-        else if (_pastState == Define.GameState.Gameover)
+        else if (Managers.Data.PastState == Define.GameState.Gameover)
         {            
+            return;
+        }
+        else
+        {
             return;
         }
     }
@@ -159,6 +156,7 @@ public class Space : MonoBehaviour
     }
     #endregion
 
+    #region Spawn_Ball
     public void SpawnFourBall()
     {
         SpawnBall();
@@ -187,7 +185,7 @@ public class Space : MonoBehaviour
             { 
                 Debug.Log(ballCount + "Cell error");  
                 error = 0; ballCount = allCells.Length;
-                _gameState = Define.GameState.Idle; // <-- 테스트 필요
+                Managers.Data.GameState = Define.GameState.Idle; // <-- 테스트 필요
                 return; }
         }
 
@@ -196,11 +194,13 @@ public class Space : MonoBehaviour
         ballCount++; // 공 개수를 하나 늘립니다.
         
     }
+    #endregion
 
+    #region Move_Ball
     // 슬라이드 액션을 인식
     public void OnSlide(Define.SlideDir slide)
     {
-        _gameState = Define.GameState.Move;
+        Managers.Data.GameState = Define.GameState.Move;
         switch (slide)
         {
             case Define.SlideDir.Up: SlideUp(); break;
@@ -209,8 +209,7 @@ public class Space : MonoBehaviour
             case Define.SlideDir.Right: SlideRight(); break;
         }
     }
-
-    #region Move_Ball
+  
     // 위로 슬라이드 할 경우
     // 동작 원리: 가장 위에있는 빈칸을 선택. 그 빈칸의 아래 칸들을 쭉 살피다가 공이 들어있는 칸을 발견하면 그 공을 선택된 빈칸으로 옮겨준다
     // 빈칸을 위에서부터 아래로 검사해야만 위쪽에 있는 빈칸쪽으로 공을 모을 수 있다.

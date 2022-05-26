@@ -23,7 +23,8 @@ public class GameStart_3 : BaseUI
 
     void Start()
     {
-        CPrint= StartPrint(sec);
+        Managers.Data.GameState = Define.GameState.None;  // GameState 변화 방지
+        CPrint = StartPrint(sec);
         StartCoroutine(CPrint);
     }
     IEnumerator StartPrint(float sec)
@@ -40,5 +41,6 @@ public class GameStart_3 : BaseUI
     {
         yield return new WaitForSeconds(sec); 
         this.CloseUI();
+        Managers.Data.GameState = Define.GameState.Idle; // GameState 변화 허용
     }
 }

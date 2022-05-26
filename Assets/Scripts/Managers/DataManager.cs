@@ -3,8 +3,13 @@ public class DataManager
 {    
     const int N = 70;
 
+    public Define.GameState PastState = Define.GameState.Idle;  // 이전 GameState
+    public Define.GameState GameState = Define.GameState.Idle;  // 지금 GameState
     public int p_state;
 
+    #region Property
+
+    // 최고기록
     ulong _bestScore;
     public ulong BEST_SCORE
     {
@@ -90,11 +95,15 @@ public class DataManager
 
     // 구간별 가중치 P
     int[] _p = new int[] { 3, 10, 120, 240, 700, 1500, 3000, 10000};
-    public int P => _p[_section]; 
-    
+    public int P => _p[_section];
+
+    #endregion
+
     // 초기화
     public void Init()
     {
+        PastState = Define.GameState.None;
+        GameState = Define.GameState.None;
         _bestScore = 0;
         BEST_SCORE = Bestscore.Load().bestScore;
         _combo = 0;
@@ -102,7 +111,7 @@ public class DataManager
         _section = 0;
     }
 
-    // 네.... 점수가 망해버렸어요.... 기획변경으로 새로 만들었습니다......모두 수고 많으셨어요..!
+    // 점수 계산
     public void ExplodedSet(int explode)
     {
         //Debug.Log(explode + "개의 공 폭발 / " + COMBO + "콤보 / " + P );
@@ -147,6 +156,9 @@ public class DataManager
 
     public void Clear()
     {
+        PastState = Define.GameState.Idle;
+        GameState = Define.GameState.Idle;
+        _bestScore = 0;
         _combo = 0;
         _score = 0;
         _section = 0;

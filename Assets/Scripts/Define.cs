@@ -33,6 +33,7 @@ public class Define
         Spawn,
         Explode,
         Gameover,
+        None,
     }
 
     public enum BallState
