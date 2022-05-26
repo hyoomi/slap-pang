@@ -126,9 +126,62 @@ public class Space : MonoBehaviour
         }
     }
 
-    // 키보드를 입력받는 함수
+
+    Vector2 firstPressPos;
+    Vector2 secondPressPos;
+    Vector2 currentSwipe;
+    //스와이프
+    public void Swipe()
+    {
+        if (Input.touches.Length > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            if (t.phase == TouchPhase.Began)
+            {
+                //save began touch 2d point
+                firstPressPos = new Vector2(t.position.x, t.position.y);
+            }
+            if (t.phase == TouchPhase.Ended)
+            {
+                //save ended touch 2d point
+                secondPressPos = new Vector2(t.position.x, t.position.y);
+
+                //create vector from the two points
+                currentSwipe = new Vector3(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+
+                //normalize the 2d vector
+                currentSwipe.Normalize();
+
+                //swipe upwards
+                if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                {
+                    Managers.Action.SlideAction(Define.SlideDir.Up);
+                }
+                //swipe down
+                if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                {
+                    Managers.Action.SlideAction(Define.SlideDir.Down);
+                }
+                //swipe left
+                if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                {
+                    Managers.Action.SlideAction(Define.SlideDir.Left);
+                }
+                //swipe right
+                if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                {
+                    Managers.Action.SlideAction(Define.SlideDir.Right);
+                }
+            }
+        }
+    }
+
+    // 슬라이드, 키보드를 입력받는 함수
     void GetInput()
-    {       
+    {
+
+        Swipe(); // 슬라이드 입력
+
         if (Input.GetKeyDown(KeyCode.UpArrow))
             Managers.Action.SlideAction(Define.SlideDir.Up);
         else if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -499,7 +552,7 @@ public class Space : MonoBehaviour
     public void SectionBomb(int section)
     {
         SpawnBomb();
-        Debug.Log("section bomb");
+        //Debug.Log("section bomb");
 
     }
     #endregion

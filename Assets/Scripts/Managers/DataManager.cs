@@ -159,6 +159,7 @@ public class DataManager
         PastState = Define.GameState.Idle;
         GameState = Define.GameState.Idle;
         _bestScore = 0;
+        BEST_SCORE = Bestscore.Load().bestScore;
         _combo = 0;
         _score = 0;
         _section = 0;
