@@ -12,6 +12,7 @@ public class SoundManager
 
     bool[] distinctSound = new bool[5];
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
+    AudioSource CupAS, GlassAS, PlantAS, PlateAS, StoneAS;
     GameObject  Button, LobbyBGM, GameBGM,  combo1, combo2, combo3, combo4, Stone, Glass, GameOver;
 
 
@@ -47,6 +48,11 @@ public class SoundManager
             }
        
         explodeInit();
+        //CupAS = _audioSources[(int)Define.Sound.Cup];
+        GlassAS = _audioSources[(int)Define.Sound.Glass];
+        //PlantAS = _audioSources[(int)Define.Sound.Plant];
+        // PlateAS = _audioSources[(int)Define.Sound.Plate];
+        StoneAS = _audioSources[(int)Define.Sound.Stone];
 
         _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("BGM")[0];
         for(int i = (int)Define.Sound.Effect; i <= (int)Define.Sound.Combo; i++)
@@ -120,11 +126,6 @@ public class SoundManager
 
     public void explodeSound(Define.BallType type)
     {
-        //AudioSource CupAS = _audioSources[(int)Define.Sound.Cup];
-        AudioSource GlassAS = _audioSources[(int)Define.Sound.Glass];
-        //AudioSource PlantAS = _audioSources[(int)Define.Sound.Plant];
-        //AudioSource PlateAS = _audioSources[(int)Define.Sound.Plate];
-        AudioSource StoneAS = _audioSources[(int)Define.Sound.Stone];
         if(type == Define.BallType.Glass && distinctSound[1]){
             GlassAS.PlayOneShot(Glass.GetComponent<AudioSource>().clip);
             distinctSound[1] = false;
