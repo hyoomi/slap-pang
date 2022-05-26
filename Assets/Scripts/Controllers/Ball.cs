@@ -34,6 +34,7 @@ public class Ball : BallAndBomb
 		_anim.enabled = true;
 		_anim.Play(Type.ToString());
 		StartCoroutine(DestroyBall());
+        Managers.Sound.explodeSound(Type);
 	}
 
 	// 애니메이션이 끝나면 Destroy
@@ -45,5 +46,6 @@ public class Ball : BallAndBomb
         }
 		Destroy(gameObject);
 		Destroy(this);
+		Managers.Sound.explodeInit();
 	}
 }

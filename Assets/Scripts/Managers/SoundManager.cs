@@ -10,8 +10,9 @@ public class SoundManager
 {
     public AudioMixer master;
 
+    bool[] distinctSound = new bool[5];
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
-    GameObject  Button, LobbyBGM, GameBGM,  combo1, combo2, combo3, combo4, Stone, GameOver;
+    GameObject  Button, LobbyBGM, GameBGM,  combo1, combo2, combo3, combo4, Stone, Glass, GameOver;
 
 
     public void Init()
@@ -24,6 +25,7 @@ public class SoundManager
         combo3 = Resources.Load<GameObject>("Prefabs/combo_3");
         combo4 = Resources.Load<GameObject>("Prefabs/combo_4");
         Stone = Resources.Load<GameObject>("Prefabs/Stone");
+        Glass = Resources.Load<GameObject>("Prefabs/Glass");
         GameOver = Resources.Load<GameObject>("Prefabs/GameEnd");
 
 
@@ -44,7 +46,7 @@ public class SoundManager
                 go.transform.parent = root.transform;
             }
        
-        
+        explodeInit();
 
         _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("BGM")[0];
         for(int i = (int)Define.Sound.Effect; i <= (int)Define.Sound.Combo; i++)
@@ -116,6 +118,23 @@ public class SoundManager
          _audioSources[(int)Define.Sound.Effect].PlayOneShot(Button.GetComponent<AudioSource>().clip);
     }
 
+    public void explodeSound(Define.BallType type)
+    {
+        //AudioSource CupAS = _audioSources[(int)Define.Sound.Cup];
+        AudioSource GlassAS = _audioSources[(int)Define.Sound.Glass];
+        //AudioSource PlantAS = _audioSources[(int)Define.Sound.Plant];
+        //AudioSource PlateAS = _audioSources[(int)Define.Sound.Plate];
+        AudioSource StoneAS = _audioSources[(int)Define.Sound.Stone];
+        if(type == Define.BallType.Glass && distinctSound[1]){
+            GlassAS.PlayOneShot(Glass.GetComponent<AudioSource>().clip);
+            distinctSound[1] = false;
+        }
+        else if(type == Define.BallType.Stone && distinctSound[4]){
+            GlassAS.PlayOneShot(Stone.GetComponent<AudioSource>().clip);
+            distinctSound[4] = false;
+        }
+    }
+
     public void comboSound(int combo)
     {
         AudioSource comboAudio = _audioSources[(int)Define.Sound.Combo];
@@ -140,6 +159,10 @@ public class SoundManager
                 comboAudio.Play();
                 break;
         }
+    }
+
+    public void explodeInit(Define.SlideDir slide = Define.SlideDir.None){
+        distinctSound = new bool[] {true, true, true, true, true};
     }
 
     public void GameEnd(){

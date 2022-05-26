@@ -31,7 +31,8 @@ public class Space : MonoBehaviour
         Managers.Action.slideAction += LastChanceBomb;
         Managers.Action.sectionAction += SectionBomb;
         Managers.Action.clickedBomb += ExplodeBomb;       
-        Managers.Action.comboAction += Managers.Sound.comboSound;      
+        Managers.Action.comboAction += Managers.Sound.comboSound;
+        Managers.Action.slideAction += Managers.Sound.explodeInit;
     }
 
     private void OnDisable()
@@ -41,7 +42,8 @@ public class Space : MonoBehaviour
         Managers.Action.slideAction -= LastChanceBomb;
         Managers.Action.sectionAction -= SectionBomb;
         Managers.Action.clickedBomb -= ExplodeBomb;       
-        Managers.Action.comboAction -= Managers.Sound.comboSound;       
+        Managers.Action.comboAction -= Managers.Sound.comboSound;  
+        Managers.Action.slideAction -= Managers.Sound.explodeInit;     
     }
 
     void Start()
