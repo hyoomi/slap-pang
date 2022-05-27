@@ -7,6 +7,7 @@ public class Space : MonoBehaviour
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
     [SerializeField] public Transform[] allCells; // 총 80개의 cell
+    //[SerializeField] public DataManager dataManager;
 
     const int ROW = 10; // 가로 10줄
     const int COL = 8; // 세로 8줄
@@ -562,6 +563,7 @@ public class Space : MonoBehaviour
     {
         int index = bomb.CellIndex;
         int tmp;
+        int num12 = 0;
 
         // 주변 반경 2칸 폭발
         if (bomb.Type == Define.BombType.Near)
@@ -579,7 +581,10 @@ public class Space : MonoBehaviour
                     continue;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
-                    bb.State = Define.BallState.Explode;                  
+                {
+                    bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
             for(int i = 0; i < middle.Length; i++)
             {
@@ -587,7 +592,10 @@ public class Space : MonoBehaviour
                 if (tmp < 0 || tmp >= allCells.Length) continue;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
             for(int i = 0; i < right.Length; i++)
             {
@@ -597,11 +605,20 @@ public class Space : MonoBehaviour
                     continue;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
+            Managers.Data.ExplodedSet(num12);
+            num12 = 0;
+            //Debug.Log(Managers.Data.COMBO);
+            //Debug.Log(Managers.Data.P);
+            //Debug.Log(num12);
+            
         }
 
-        // 같은 종료 폭탄 폭발
+        // 같은 종류 폭탄 폭발
         else if(bomb.Type == Define.BombType.Same)
         {
             for (int i = 0; i < allCells.Length; i++)
@@ -609,8 +626,13 @@ public class Space : MonoBehaviour
                 if (i < 0 || i >= allCells.Length) continue;
                 Ball ball = allCells[i].GetComponentInChildren<Ball>();
                 if (ball != null && ball.Type == bomb.BallType && ball.State != Define.BallState.Explode)
+                {
                     ball.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
+            Managers.Data.ExplodedSet(num12);
+            num12 = 0;
         }
 
         // 가로 한줄 폭발
@@ -624,7 +646,10 @@ public class Space : MonoBehaviour
                     break;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
             for (int i = 1; i < COL; i++)
             {
@@ -634,8 +659,13 @@ public class Space : MonoBehaviour
                     break;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
+            Managers.Data.ExplodedSet(num12);
+            num12 = 0;
         }
 
         // 세로 한줄 폭발
@@ -648,7 +678,10 @@ public class Space : MonoBehaviour
 
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
             for (int i = 1; i < ROW; i++)
             {
@@ -656,8 +689,13 @@ public class Space : MonoBehaviour
                 if (tmp < 0 || tmp >= allCells.Length) continue;
                 BallAndBomb bb = allCells[tmp].GetComponentInChildren<BallAndBomb>();
                 if (bb != null && bb.State != Define.BallState.Explode)
+                {
                     bb.State = Define.BallState.Explode;
+                    num12++;
+                }
             }
+            Managers.Data.ExplodedSet(num12);
+            num12 = 0;
         }
     }
     #endregion

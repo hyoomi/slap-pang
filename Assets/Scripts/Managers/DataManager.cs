@@ -1,5 +1,5 @@
 ﻿// 최고기록을 저장하고 불러오는 Manager
-public class DataManager 
+public class DataManager
 {    
     const int N = 70;
 
@@ -114,16 +114,35 @@ public class DataManager
     // 점수 계산
     public void ExplodedSet(int explode)
     {
+        ulong tmpSCORE = 0;
         //Debug.Log(explode + "개의 공 폭발 / " + COMBO + "콤보 / " + P );
-        ulong tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
-        if (COMBO == 0)
-            SCORE = tmpSCORE;
-        if (COMBO == 1) // 1콤보
-            SCORE = tmpSCORE * 3;
-        else if (COMBO == 2) // 2콤보
-            SCORE = tmpSCORE * 5;
-        else // 3콤보 이상
-            SCORE = tmpSCORE * 8;
+        if (explode > 3)
+        { 
+            tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
+        
+            if (COMBO == 0)
+                SCORE = tmpSCORE;
+            if (COMBO == 1) // 1콤보
+                SCORE = tmpSCORE * 3;
+            else if (COMBO == 2) // 2콤보
+                SCORE = tmpSCORE * 5;
+            else // 3콤보 이상
+                SCORE = tmpSCORE * 8;
+        }
+        else
+        { 
+            tmpSCORE = (ulong)(explode * N * P);
+
+            if (COMBO == 0)
+                SCORE = tmpSCORE;
+            if (COMBO == 1) // 1콤보
+                SCORE = tmpSCORE * 3;
+            else if (COMBO == 2) // 2콤보
+                SCORE = tmpSCORE * 5;
+            else // 3콤보 이상
+                SCORE = tmpSCORE * 8;
+        }
+
     }
 
     // 점수에 색깔 입히기
