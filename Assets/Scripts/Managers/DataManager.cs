@@ -1,4 +1,6 @@
-﻿// 최고기록을 저장하고 불러오는 Manager
+﻿using UnityEngine;
+
+// 최고기록을 저장하고 불러오는 Manager
 public class DataManager
 {    
     const int N = 70;
@@ -49,6 +51,7 @@ public class DataManager
         get { return _score; }
         set 
         {
+            Debug.Log("score: " + _score + " / plus: " + value + " / result: " + (_score + value));
             _score += value;
             if (_score >= 999999999999999) 
             { 
@@ -112,37 +115,39 @@ public class DataManager
     }
 
     // 점수 계산
-    public void ExplodedSet(int explode)
+    public void ExplodedBallSet(int explode)
     {
         ulong tmpSCORE = 0;
-        //Debug.Log(explode + "개의 공 폭발 / " + COMBO + "콤보 / " + P );
-        if (explode > 3)
-        { 
-            tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
-        
-            if (COMBO == 0)
-                SCORE = tmpSCORE;
-            if (COMBO == 1) // 1콤보
-                SCORE = tmpSCORE * 3;
-            else if (COMBO == 2) // 2콤보
-                SCORE = tmpSCORE * 5;
-            else // 3콤보 이상
-                SCORE = tmpSCORE * 8;
+
+        tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
+
+        Debug.Log(explode + "개의 공 폭발 / " + COMBO + "콤보" + " / S:" + Section + " / P: " + P + " / tmpScore: " + tmpSCORE);
+
+        if (COMBO == 0)
+            SCORE = tmpSCORE;
+        else if (COMBO == 1) // 1콤보
+            SCORE = tmpSCORE * 3;
+        else if (COMBO == 2) // 2콤보
+            SCORE = tmpSCORE * 5;
+        else // 3콤보 이상
+            SCORE = tmpSCORE * 8;
+       
+    }
+
+    public void ExplodeBomb(int explode)
+    {
+        ulong tmpSCORE = 0;
+        if (explode < 4)
+        {
+            tmpSCORE = (ulong)(explode * N * P);
         }
         else
-        { 
-            tmpSCORE = (ulong)(explode * N * P);
-
-            if (COMBO == 0)
-                SCORE = tmpSCORE;
-            if (COMBO == 1) // 1콤보
-                SCORE = tmpSCORE * 3;
-            else if (COMBO == 2) // 2콤보
-                SCORE = tmpSCORE * 5;
-            else // 3콤보 이상
-                SCORE = tmpSCORE * 8;
+        {
+            tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
         }
 
+        Debug.Log(explode + "개의 공 폭발 / " + " / S:" + Section + " / P: " + P + " / tmpScore: " + tmpSCORE);
+        SCORE = tmpSCORE;
     }
 
     // 점수에 색깔 입히기

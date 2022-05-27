@@ -421,7 +421,7 @@ public class Space : MonoBehaviour
             }
 
             // 4콤보 이상일때
-            Managers.Data.ExplodedSet(popnumber);
+            Managers.Data.ExplodedBallSet(popnumber);
         }
        
         int count = ballList.Count;
@@ -610,7 +610,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
-            Managers.Data.ExplodedSet(epb);
+            Managers.Data.ExplodeBomb(epb);
             epb = 0;
             //Debug.Log(Managers.Data.COMBO);
             //Debug.Log(Managers.Data.P);
@@ -631,7 +631,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
-            Managers.Data.ExplodedSet(epb);
+            Managers.Data.ExplodeBomb(epb);
             epb = 0;
         }
 
@@ -664,7 +664,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
-            Managers.Data.ExplodedSet(epb);
+            Managers.Data.ExplodeBomb(epb);
             epb = 0;
         }
 
@@ -694,7 +694,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
-            Managers.Data.ExplodedSet(epb);
+            Managers.Data.ExplodeBomb(epb);
             epb = 0;
         }
     }
