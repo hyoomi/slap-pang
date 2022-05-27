@@ -563,7 +563,7 @@ public class Space : MonoBehaviour
     {
         int index = bomb.CellIndex;
         int tmp;
-        int num12 = 0;
+        int epb = 0; // 구슬 터지는 개수 카운트를 위한 변수
 
         // 주변 반경 2칸 폭발
         if (bomb.Type == Define.BombType.Near)
@@ -583,7 +583,7 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
             for(int i = 0; i < middle.Length; i++)
@@ -594,7 +594,7 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
             for(int i = 0; i < right.Length; i++)
@@ -607,11 +607,11 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
-            Managers.Data.ExplodedSet(num12);
-            num12 = 0;
+            Managers.Data.ExplodedSet(epb);
+            epb = 0;
             //Debug.Log(Managers.Data.COMBO);
             //Debug.Log(Managers.Data.P);
             //Debug.Log(num12);
@@ -628,11 +628,11 @@ public class Space : MonoBehaviour
                 if (ball != null && ball.Type == bomb.BallType && ball.State != Define.BallState.Explode)
                 {
                     ball.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
-            Managers.Data.ExplodedSet(num12);
-            num12 = 0;
+            Managers.Data.ExplodedSet(epb);
+            epb = 0;
         }
 
         // 가로 한줄 폭발
@@ -648,7 +648,7 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
             for (int i = 1; i < COL; i++)
@@ -661,11 +661,11 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
-            Managers.Data.ExplodedSet(num12);
-            num12 = 0;
+            Managers.Data.ExplodedSet(epb);
+            epb = 0;
         }
 
         // 세로 한줄 폭발
@@ -680,7 +680,7 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
             for (int i = 1; i < ROW; i++)
@@ -691,11 +691,11 @@ public class Space : MonoBehaviour
                 if (bb != null && bb.State != Define.BallState.Explode)
                 {
                     bb.State = Define.BallState.Explode;
-                    num12++;
+                    epb++;
                 }
             }
-            Managers.Data.ExplodedSet(num12);
-            num12 = 0;
+            Managers.Data.ExplodedSet(epb);
+            epb = 0;
         }
     }
     #endregion
