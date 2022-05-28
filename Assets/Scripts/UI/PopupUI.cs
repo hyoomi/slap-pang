@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PopupUI : BaseUI
 {
@@ -34,9 +35,19 @@ public class PopupUI : BaseUI
         Managers.Scene.LoadScene(Define.Scene.Game);
     }
 
-    // 게임 재시작
+    // 게임 로비화면으로 이동
     public void GoToLobbyButton()
     {
         Managers.Scene.LoadScene(Define.Scene.Lobby);
+    }
+
+    // 게임 앱 종료 
+    public void GameEndButton()
+    {   
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        Application.Quit();
+    #endif
     }
 }
