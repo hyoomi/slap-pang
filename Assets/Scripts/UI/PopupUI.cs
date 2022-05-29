@@ -41,13 +41,24 @@ public class PopupUI : BaseUI
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
 
-    // 게임 앱 종료 
+    /* 게임 앱 종료 
+     * Managers.Scene.CurrentScene;으로 get해온 BaseScene을 조건에 어떻게 매치해야할지 찾고있습니다,,
     public void GameEndButton()
-    {   
-    #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-    #else
-        Application.Quit();
-    #endif
+    {
+        BaseScene SceneType = Managers.Scene.CurrentScene;
+        Debug.Log(SceneType);
+        if (SceneType == typeof(LobbyScene))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+        else if (SceneType == typeof(GameScene))
+        {
+            Managers.Scene.LoadScene(Define.Scene.Lobby);
+        }
     }
+    */
 }
