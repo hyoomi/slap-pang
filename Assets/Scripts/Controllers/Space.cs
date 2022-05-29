@@ -131,6 +131,7 @@ public class Space : MonoBehaviour
     Vector2 firstPressPos;
     Vector2 secondPressPos;
     Vector2 currentSwipe;
+    const float swipeSpeed = 0.3f;
     //스와이프
     public void Swipe()
     {
@@ -154,22 +155,22 @@ public class Space : MonoBehaviour
                 currentSwipe.Normalize();
 
                 //swipe upwards
-                if (currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                if (currentSwipe.y > 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Up);
                 }
                 //swipe down
-                if (currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
+                if (currentSwipe.y < 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Down);
                 }
                 //swipe left
-                if (currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                if (currentSwipe.x < 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Left);
                 }
                 //swipe right
-                if (currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
+                if (currentSwipe.x > 0 && currentSwipe.y > swipeSpeed && currentSwipe.y < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Right);
                 }

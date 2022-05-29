@@ -260,7 +260,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 99fae9f22dcde1e46a96b089f462dd32, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cf7e7fe2abc2a7a4da63579267683110, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiComponentPrefabs:
   - {fileID: 9122072234601350810, guid: b17d9bd3f8994b243b21da5cef8fe870, type: 3}
-  - {fileID: 7273054511330017502, guid: e0bd52e1ade99a940b123203f838909c, type: 3}
+  - {fileID: 42490526543885870, guid: e716f845f83346544abc0bf0b6920ded, type: 3}
   - {fileID: 646422104625656167, guid: 7dc18b3f189f7e14598f3c21e81078f6, type: 3}
   - {fileID: 7871384664774741729, guid: a1f9bd17efc7fe64ca33e49b67797fef, type: 3}
   - {fileID: 1549820566537353501, guid: 72d6aa425921c1347b7daf720670c8ae, type: 3}

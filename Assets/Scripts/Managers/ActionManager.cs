@@ -6,6 +6,7 @@ public class ActionManager
 	public Action<Bomb> clickedBomb; // 클릭된 폭탄을 알리는 액션
 	public Action<int> comboAction; // 콤보를 알리는 액션
 	public Action<int> sectionAction; // 구간 변화를 알리는 액션
+	public bool popupAction; // 팝업이 떴다는 것을 감지
 
 	Define.GameState _gameState;
 	public Define.GameState GameState
@@ -33,7 +34,7 @@ public class ActionManager
 
 	public void SlideAction(Define.SlideDir slide)
     {
-		// 슬라이드가 입력됐을 때, None이 아니라면 Action 발생
+		if (popupAction) return;
 		if (slide != Define.SlideDir.None) slideAction?.Invoke(slide);
 	}
 
@@ -57,6 +58,6 @@ public class ActionManager
 
 	public void Init()
     {
-
+		popupAction = false;
 	}
 }

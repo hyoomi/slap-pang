@@ -24,6 +24,16 @@ public class PopupUI : BaseUI
         Time.timeScale = 0;
     }
 
+    public void OnEnable()
+    {
+        Managers.Action.popupAction = true;
+    }
+
+    public void OnDisable()
+    {
+        Managers.Action.popupAction = false;
+    }
+
     public void RunTime()
     {
         Time.timeScale = 1;
