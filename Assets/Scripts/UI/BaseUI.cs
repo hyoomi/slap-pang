@@ -23,8 +23,13 @@ public class BaseUI : MonoBehaviour
         Time.timeScale = 0;
     }
 
+    // 로비에서 Touch! 버튼 클릭시 로그인
+    public void Login()
+    {
+        Managers.Scene.Login = true;
+    }
+
     // 해당 UI 삭제
-    // 수정할 예정! 일단 이걸로 사용해주세요
     public void CloseUI()
     {
         Destroy(gameObject);

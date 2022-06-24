@@ -170,7 +170,7 @@ public class Space : MonoBehaviour
                     Managers.Action.SlideAction(Define.SlideDir.Left);
                 }
                 //swipe right
-                if (currentSwipe.x > 0 && currentSwipe.y > swipeSpeed && currentSwipe.y < swipeSpeed)
+                if (currentSwipe.x > 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Right);
                 }

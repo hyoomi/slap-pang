@@ -9,6 +9,13 @@ public class SceneManager
     // 현재 Scene
     public BaseScene CurrentScene { get { return GameObject.FindObjectOfType<BaseScene>(); } }
 
+    public bool Login;
+
+    public void Init()
+    {
+        Login = false;
+    }
+
     // Scene을 Load하는 함수
     public void LoadScene(Define.Scene type)
     {

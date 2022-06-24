@@ -74,10 +74,19 @@ public class DataManager
                 Section = 4;
             else if (_score >= 10000000 && _score < 100000000)
                 Section = 5;
-            else if (_score >= 100000000 && _score < 1000000000)
+            else if (_score >= 100000000 && _score < 300000000)
                 Section = 6;
+            else if (_score >= 300000000 && _score < 700000000)
+                Section = 7;
+            else if (_score >= 700000000 && _score < 1000000000)
+                Section = 8;
+            else if (_score >= 700000000 && _score < 2000000000)
+                Section = 9;
+            else if (_score >= 200000000 && _score < 4000000000)
+                Section = 10;
             else
-                Section = 7;          
+                Section = 11;
+
         }
     }
 
@@ -97,7 +106,7 @@ public class DataManager
     }
 
     // 구간별 가중치 P
-    int[] _p = new int[] { 3, 10, 120, 240, 700, 1500, 3000, 10000};
+    int[] _p = new int[] { 3, 10, 120, 240, 700, 1500, 3000, 7000, 14000, 21000, 33000, 42000};
     public int P => _p[_section];
 
     #endregion
@@ -152,10 +161,10 @@ public class DataManager
 
     // 점수에 색깔 입히기
     string[] colorCode = new string[] {
-        "<color=#0000CD>",
-        "<color=#006400>",
-        "<color=#FF8C00>",
-        "<color=#FFD700>",
+        "<color=#0000FF>",
+        "<color=#228B22>",
+        "<color=#FF4700>",
+        "<color=#FF0000>",
         "<color=#FF0000>",
     };
     string endCode = "</color>";

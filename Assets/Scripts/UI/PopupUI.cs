@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PopupUI : BaseUI
 {
@@ -51,13 +52,10 @@ public class PopupUI : BaseUI
         Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
 
-    /* 게임 앱 종료 
-     * Managers.Scene.CurrentScene;으로 get해온 BaseScene을 조건에 어떻게 매치해야할지 찾고있습니다,,
     public void GameEndButton()
     {
-        BaseScene SceneType = Managers.Scene.CurrentScene;
-        Debug.Log(SceneType);
-        if (SceneType == typeof(LobbyScene))
+        Bestscore.Save();
+        if (Managers.Scene.CurrentScene.SceneType == Define.Scene.Lobby)
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -65,10 +63,9 @@ public class PopupUI : BaseUI
             Application.Quit();
 #endif
         }
-        else if (SceneType == typeof(GameScene))
+        else
         {
             Managers.Scene.LoadScene(Define.Scene.Lobby);
         }
     }
-    */
 }

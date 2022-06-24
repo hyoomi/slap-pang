@@ -57,6 +57,7 @@ public class Managers : MonoBehaviour
                 s_instance._action.Init();
                 s_instance._data.Init();
                 s_instance._sound.Init();
+                s_instance._scene.Init();
             }
         }
     }

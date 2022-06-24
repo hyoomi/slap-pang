@@ -27,6 +27,7 @@ public class GameStart_3 : BaseUI
         CPrint = StartPrint(sec);
         StartCoroutine(CPrint);
     }
+
     IEnumerator StartPrint(float sec)
     {
         yield return new WaitForSeconds(sec);
@@ -37,6 +38,7 @@ public class GameStart_3 : BaseUI
         yield return new WaitForSeconds(sec);
         StopCoroutine(CloseStart);
     }
+
     IEnumerator CloseStartUI(float sec)
     {
         yield return new WaitForSeconds(sec); 
