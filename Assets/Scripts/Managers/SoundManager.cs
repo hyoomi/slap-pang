@@ -12,8 +12,8 @@ public class SoundManager
 
     bool[] distinctSound = new bool[5];
     AudioSource[] _audioSources = new AudioSource[(int)Enum.GetNames(typeof(Define.Sound)).Length];
-    AudioSource CupAS, GlassAS, PlantAS, PlateAS, StoneAS;
-    GameObject  Button, LobbyBGM, GameBGM,  combo1, combo2, combo3, combo4, Stone, Glass, GameOver;
+    AudioSource MarbleAS, StoneAS;
+    GameObject  Button, LobbyBGM, GameBGM,  combo1, combo2, combo3, combo4, combo5, Stone, Marble, GameOver;
 
 
     public void Init()
@@ -25,13 +25,12 @@ public class SoundManager
         combo2 = Resources.Load<GameObject>("Prefabs/combo_2");
         combo3 = Resources.Load<GameObject>("Prefabs/combo_3");
         combo4 = Resources.Load<GameObject>("Prefabs/combo_4");
+        combo5 = Resources.Load<GameObject>("Prefabs/combo_5");
         Stone = Resources.Load<GameObject>("Prefabs/Stone");
-        Glass = Resources.Load<GameObject>("Prefabs/Glass");
+        Marble = Resources.Load<GameObject>("Prefabs/Marble");
         GameOver = Resources.Load<GameObject>("Prefabs/GameEnd");
 
-
         master = Resources.Load<AudioMixer>("Master");
-
 
         GameObject root = GameObject.Find("@Sound");
         if (root == null) 
@@ -48,10 +47,8 @@ public class SoundManager
             }
        
         explodeInit();
-        //CupAS = _audioSources[(int)Define.Sound.Cup];
-        GlassAS = _audioSources[(int)Define.Sound.Glass];
-        //PlantAS = _audioSources[(int)Define.Sound.Plant];
-        // PlateAS = _audioSources[(int)Define.Sound.Plate];
+
+        MarbleAS = _audioSources[(int)Define.Sound.Marble];
         StoneAS = _audioSources[(int)Define.Sound.Stone];
 
         _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = master.FindMatchingGroups("BGM")[0];
@@ -108,15 +105,10 @@ public class SoundManager
 	}
     
     public void PlaybyScene(){
-        if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Lobby){
-            _audioSources[(int)Define.Sound.Bgm].clip = LobbyBGM.GetComponent<AudioSource>().clip;
-            _audioSources[(int)Define.Sound.Bgm].Play();
-        }
-        else if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Game){
-            _audioSources[(int)Define.Sound.Bgm].clip = GameBGM.GetComponent<AudioSource>().clip;
-
-            _audioSources[(int)Define.Sound.Bgm].Play();
-        }
+        if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Lobby)
+            Play(LobbyBGM.GetComponent<AudioSource>().clip, Define.Sound.Bgm);
+        else if(Managers.Scene.CurrentScene.SceneType == Define.Scene.Game)
+            Play(GameBGM.GetComponent<AudioSource>().clip, Define.Sound.Bgm);
     }
 
     public void buttonSound()
@@ -126,12 +118,24 @@ public class SoundManager
 
     public void explodeSound(Define.BallType type)
     {
-        if(type == Define.BallType.Glass && distinctSound[1]){
-            GlassAS.PlayOneShot(Glass.GetComponent<AudioSource>().clip);
+        if(type == Define.BallType.Cup && distinctSound[0]){
+            MarbleAS.PlayOneShot(Marble.GetComponent<AudioSource>().clip);
+            distinctSound[0] = false;
+        }
+        else if(type == Define.BallType.Glass && distinctSound[1]){
+            MarbleAS.PlayOneShot(Marble.GetComponent<AudioSource>().clip);
             distinctSound[1] = false;
         }
+        else if(type == Define.BallType.Plant && distinctSound[2]){
+            MarbleAS.PlayOneShot(Marble.GetComponent<AudioSource>().clip);
+            distinctSound[2] = false;
+        }
+        else if(type == Define.BallType.Plate && distinctSound[3]){
+            MarbleAS.PlayOneShot(Marble.GetComponent<AudioSource>().clip);
+            distinctSound[3] = false;
+        }
         else if(type == Define.BallType.Stone && distinctSound[4]){
-            GlassAS.PlayOneShot(Stone.GetComponent<AudioSource>().clip);
+            StoneAS.PlayOneShot(Stone.GetComponent<AudioSource>().clip);
             distinctSound[4] = false;
         }
     }
@@ -155,8 +159,12 @@ public class SoundManager
                 comboAudio.clip = combo3.GetComponent<AudioSource>().clip;
                 comboAudio.Play();
                 break;
-            default:
+            case 4:
                 comboAudio.clip = combo4.GetComponent<AudioSource>().clip;
+                comboAudio.Play();
+                break;
+            default:
+                comboAudio.clip = combo5.GetComponent<AudioSource>().clip;
                 comboAudio.Play();
                 break;
         }

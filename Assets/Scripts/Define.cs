@@ -12,10 +12,7 @@ public class Define
     {
         Bgm,
         Effect,
-        Cup,
-        Glass,
-        Plant,
-        Plate,
+        Marble,
         Stone,
         Combo
     }
