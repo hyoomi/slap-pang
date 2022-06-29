@@ -562,6 +562,8 @@ public class Space : MonoBehaviour
     // 클릭한 폭탄이 터지는 함수
     public void ExplodeBomb(Bomb bomb)
     {
+        Managers.Data.COMBO = 1; // 폭탄을 터뜨리면 콤보로 해주자
+
         int index = bomb.CellIndex;
         int tmp;
         int epb = 0; // 구슬 터지는 개수 카운트를 위한 변수
