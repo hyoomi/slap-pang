@@ -6,14 +6,16 @@ public class GameoverScript : PopupUI
 {
     [SerializeField] Text bestScore;
 
-    public void OnEnable()
+    public new void OnEnable()
     {
+        base.OnEnable();
         Managers.Sound.GameEnd();
         bestScore.text = Managers.Data.ColorScore(Managers.Data.SCORE) + "점!";
     }
 
-    public void OnDisable()
+    public new void OnDisable()
     {
+        base.OnDisable();
         Managers.Sound.Stop();
     }
 }

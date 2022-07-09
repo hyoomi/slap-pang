@@ -70,7 +70,6 @@ public class UIManager
         GameObject go = Resources.Load<GameObject>($"Prefabs/UI/{path}"); // Resources폴더안에 Prefabs폴더안에 UI폴더안에서 프리펩을 찾아온다
         if (go == null) // 로드 실패 오류처리
         {
-            Debug.Log($"Failed to load prefab : Prefabs/UI/{path}");
             return null;
         }
         

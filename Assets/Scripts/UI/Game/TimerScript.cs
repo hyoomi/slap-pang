@@ -13,16 +13,13 @@ public class TimerScript : BaseUI
     int p_change_count = 1; // p0 -> p1 포함해서 1
     float[] p_time = new float[12] { 0, 2, 5, 5, 7, 12, 10, 11, 12, 12, 13, 11}; //P에 따른 추가시간 값 배열. 기획변경으로 수정됨
 
-
     void Start()
     {
-        //Gameover.SetActive(false);
         GameObject go= Gameover;
         Timer = GetComponent<Slider>();
         timeLeft = 0;
         check = false;
     }
-
 
     void Update()
     {
@@ -36,12 +33,12 @@ public class TimerScript : BaseUI
         }
         else
         {
-            //Gameover.SetActive(true);
             if (check) return;
             check = true;
             base.ShowPopup(go);
         }
     }
+
     void P_Addtime()  //p에 따른 시간 추가 함수
     {
         if (Managers.Data.p_state >= p_change_count && Managers.Data.p_state <= 11)
@@ -51,57 +48,14 @@ public class TimerScript : BaseUI
             for (int i = 0; i < dif+1; i++)
             {
                 timeLeft -= p_time[Managers.Data.p_state - i];
-                //if(timeLeft < 0) //시간을 추가했을 때 Maxtime을 초과한다면 초과한 시간은 버림
-                //{
-                //    timeLeft = 0;
-                //}
+
                 if(timeLeft < 0) //시간을 추가했을 때 Maxtime을 초과해도 더 늘림
                 {
                     MaxTime += (-timeLeft);
                     timeLeft = 0;
                 }
-
-                //Debug.Log(p_time[Managers.Data.p_state - i] + "초 추가!");
             }
             p_change_count = Managers.Data.p_state + 1;
-        }
-        //if (Managers.Data.p_state == 1 && p_change_count == 1)
-        //{
-        //    timeLeft -= 3f;
-        //    p_change_count++;
-        //    Debug.Log("p1: 시간 3초 증가!");
-        //}
-        //else if (Managers.Data.p_state == 2 && p_change_count ==2)
-        //{
-        //    timeLeft -= 6f;
-        //    p_change_count++;
-        //    Debug.Log("p2: 시간 6초 증가!");
-
-        //}
-        //else if (Managers.Data.p_state == 3 && p_change_count == 3)
-        //{
-        //    timeLeft -= 10f;
-        //    p_change_count++;
-        //    Debug.Log("p3: 시간 10초 증가!");
-        //}
-        //else if (Managers.Data.p_state == 4 && p_change_count == 4)
-        //{
-        //    timeLeft -= 15f;
-        //    p_change_count++;
-        //    Debug.Log("p4: 시간 15초 증가!");
-
-        //}
-        //else if (Managers.Data.p_state == 5 && p_change_count == 5)
-        //{
-        //    timeLeft -= 25f;
-        //    p_change_count++;
-        //    Debug.Log("p5: 시간 25초 증가!");
-        //}
-        //else if (Managers.Data.p_state == 6 && p_change_count == 6)
-        //{
-        //    timeLeft -= 40f;
-        //    p_change_count++;
-        //    Debug.Log("p6: 시간 40초 증가!");
-        //}
-        }
+        }      
     }
+}

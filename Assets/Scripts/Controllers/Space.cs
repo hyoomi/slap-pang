@@ -7,7 +7,6 @@ public class Space : MonoBehaviour
     [SerializeField] GameObject ballPrefab; // 공 프리펩
     [SerializeField] GameObject bombPrefab; // 폭탄 프리펩
     [SerializeField] public Transform[] allCells; // 총 80개의 cell
-    //[SerializeField] public DataManager dataManager;
 
     const int ROW = 10; // 가로 10줄
     const int COL = 8; // 세로 8줄
@@ -17,7 +16,7 @@ public class Space : MonoBehaviour
     int error = 0; // 무한루프 방지 임시 변수
     bool gameover; // 게임오버 체크하는 변수
 
-    public static int ballCount; // 공의 총 개수를 업데이트 할 변수. 오류가 예상됨. 수정 예정
+    public static int ballCount; // 공의 총 개수를 업데이트 할 변수
     
 
     #region Unity
@@ -70,7 +69,6 @@ public class Space : MonoBehaviour
     }
     #endregion
 
-
     #region Game_State_Control
 
     // GameState 상태도
@@ -78,8 +76,9 @@ public class Space : MonoBehaviour
     // Move (CheckGameState) -> Idle (SpawnFourBall) -> Spawn
     // Spawn (ExplodeBall) -> Explode 
     // Explode (CheckGameState) -> Idle (Gameover || GetInput)
-    //  Move판정은 OnSlide함수 내부에 존재함
+    //  *Move판정은 OnSlide함수 내부에 존재함
 
+    // 게임의 상태를 컨트롤 하는 함수
     void UpdateController()
     {
         Managers.Data.PastState = Managers.Data.GameState;
@@ -88,6 +87,7 @@ public class Space : MonoBehaviour
         {
             GetInput();
         }
+
         else if(Managers.Data.PastState == Define.GameState.Move)
         {
             Managers.Data.GameState = CheckGameState();
@@ -97,11 +97,13 @@ public class Space : MonoBehaviour
                 Managers.Data.GameState = Define.GameState.Spawn;
             }
         }
+
         else if (Managers.Data.PastState == Define.GameState.Spawn)
         {           
             ExplodeBall();
             Managers.Data.GameState = Define.GameState.Explode;
         }
+
         else if (Managers.Data.PastState == Define.GameState.Explode)
         {
             Managers.Data.GameState = CheckGameState();
@@ -117,22 +119,24 @@ public class Space : MonoBehaviour
                 GetInput();
             }
         }
+
         else if (Managers.Data.PastState == Define.GameState.Gameover)
         {            
             return;
         }
+
         else
         {
             return;
         }
     }
 
-
+    // 슬라이드. 핸드폰 스와이프 인식하는 함수
     Vector2 firstPressPos;
     Vector2 secondPressPos;
     Vector2 currentSwipe;
-    const float swipeSpeed = 0.3f;
-    //스와이프
+    const float swipeSpeed = 0.1f;
+
     public void Swipe()
     {
         if (Input.touches.Length > 0)
@@ -178,12 +182,12 @@ public class Space : MonoBehaviour
         }
     }
 
-    // 슬라이드, 키보드를 입력받는 함수
+    // 슬라이드 감지하는 함수
     void GetInput()
     {
+        Swipe(); // 핸드폰 스와이프 입력 감지
 
-        Swipe(); // 슬라이드 입력
-
+        // 키보드 입력 감지
         if (Input.GetKeyDown(KeyCode.UpArrow))
             Managers.Action.SlideAction(Define.SlideDir.Up);
         else if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -212,6 +216,7 @@ public class Space : MonoBehaviour
     #endregion
 
     #region Spawn_Ball
+    // 네개의 공 스폰
     public void SpawnFourBall()
     {
         SpawnBall();
@@ -226,7 +231,7 @@ public class Space : MonoBehaviour
         if (ballCount >= allCells.Length)  // Cell이 꽉 찼으니 공을 스폰하지 않습니다
         {
             if (!gameover)
-            { gameover = true;  }             
+            { gameover = true; }             
             return;
         }
 
@@ -237,10 +242,9 @@ public class Space : MonoBehaviour
             if (allCells[spawnCell].childCount == DEF_CHILD) // 해당 cell이 비어있다면 while문 탈출
                 break;
             if (++error > 10000000)  // 무한루프 error 처리
-            { 
-                Debug.Log(ballCount + "Cell error");  
+            {  
                 error = 0; ballCount = allCells.Length;
-                Managers.Data.GameState = Define.GameState.Idle; // <-- 테스트 필요
+                Managers.Data.GameState = Define.GameState.Idle;
                 return; }
         }
 
@@ -392,6 +396,7 @@ public class Space : MonoBehaviour
     int popnumber = 0;
     Stack<Ball> ballList = new Stack<Ball>();
 
+    // 터질 구슬인지 체크하는 함수
     public void ExplodeBall()
     {
         // 모든 셀 콤보 검사
@@ -445,8 +450,8 @@ public class Space : MonoBehaviour
         }
     }
 
-        // index의 콤보 검사하는 함수
-        public void CheckBall(int index, Define.BallType type)
+    // index의 콤보 검사하는 함수
+    public void CheckBall(int index, Define.BallType type)
     {
         if (index < 0 || index >= allCells.Length)
             return;
@@ -473,7 +478,7 @@ public class Space : MonoBehaviour
     #endregion
 
     #region Bomb
-    // 폭탄을 스폰해주는 임시 함수
+    // 폭탄을 스폰해주는 함수
     public void SpawnBomb()
     {
         // Cell이 꽉 찼으니 공을 스폰하지 않습니다
@@ -492,7 +497,7 @@ public class Space : MonoBehaviour
             {
                 break;
             }
-            if (++error > 10000000) { Debug.Log(ballCount+"Cell error"); error = 0; ballCount = allCells.Length;  return; }
+            if (++error > 10000000) { error = 0; ballCount = allCells.Length;  return; }
         }
 
         GameObject go = Instantiate(bombPrefab, allCells[spawnCell]); // 해당 cell을 부모로 하여 ball을 instantiate합니다
@@ -521,7 +526,6 @@ public class Space : MonoBehaviour
             time += 1f;
             if(Playtime <= 0f)
             {
-                //Debug.Log(time + "초만에 TimeBomb 생성!");
                 SpawnBomb();
                 TimeBomb();
                 yield break;
@@ -536,16 +540,15 @@ public class Space : MonoBehaviour
     }
 
     // Last chance 폭탄
-    // 게임오버 직전: 구슬이 80퍼 이상 찰 경우, [Todo]시간 초과할 경우..?
+    // 게임오버 직전: 구슬이 80퍼 이상 찰 경우
     // 1회 제공후에 Last Chance 폭탄은 제공되지 않는다.
-    static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 갯수
+    static int lastChanceBomb_count = 0; //여태 생성된 lastchancebomb 개수
     public void LastChanceBomb(Define.SlideDir slide)
     { 
         if (ballCount >= 64 && lastChanceBomb_count < 1)
         {
             SpawnBomb();
             lastChanceBomb_count++;
-            Debug.Log("LastChance Bomb 생성!");
         }
     }
 
@@ -554,8 +557,6 @@ public class Space : MonoBehaviour
     public void SectionBomb(int section)
     {
         SpawnBomb();
-        //Debug.Log("section bomb");
-
     }
     #endregion
 
@@ -575,6 +576,7 @@ public class Space : MonoBehaviour
             int[] left = { -9, -1, 7 };
             int[] middle = { -8, 8 };
             int[] right = { -7, 1, 9 };
+
             for(int i = 0; i < left.Length; i++)
             {
                 tmp = index + left[i];
@@ -589,6 +591,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             for(int i = 0; i < middle.Length; i++)
             {
                 tmp = index + middle[i];
@@ -600,6 +603,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             for(int i = 0; i < right.Length; i++)
             {
                 tmp = index + right[i];
@@ -613,12 +617,9 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             Managers.Data.ExplodeBomb(epb);
-            epb = 0;
-            //Debug.Log(Managers.Data.COMBO);
-            //Debug.Log(Managers.Data.P);
-            //Debug.Log(num12);
-            
+            epb = 0;           
         }
 
         // 같은 종류 폭탄 폭발
@@ -654,6 +655,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             for (int i = 1; i < COL; i++)
             {
                 tmp = index + i;
@@ -667,6 +669,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             Managers.Data.ExplodeBomb(epb);
             epb = 0;
         }
@@ -686,6 +689,7 @@ public class Space : MonoBehaviour
                     epb++;
                 }
             }
+
             for (int i = 1; i < ROW; i++)
             {
                 tmp = index + COL * i;

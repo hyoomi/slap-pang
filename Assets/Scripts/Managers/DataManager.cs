@@ -38,7 +38,6 @@ public class DataManager
             if (_combo > 0)
             {
                 Managers.Action.ComboAction(_combo);
-                //Debug.Log(_combo + "콤보");
             }
             _combo++;
         }
@@ -51,7 +50,6 @@ public class DataManager
         get { return _score; }
         set 
         {
-            Debug.Log("score: " + _score + " / plus: " + value + " / result: " + (_score + value));
             _score += value;
             if (_score >= 999999999999999) 
             { 
@@ -130,8 +128,6 @@ public class DataManager
 
         tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
 
-        Debug.Log(explode + "개의 공 폭발 / " + COMBO + "콤보" + " / S:" + Section + " / P: " + P + " / tmpScore: " + tmpSCORE);
-
         if (COMBO == 0)
             SCORE = tmpSCORE;
         else if (COMBO == 1) // 1콤보
@@ -155,7 +151,6 @@ public class DataManager
             tmpSCORE = (ulong)(explode * (explode - 3) * N * P);
         }
 
-        Debug.Log(explode + "개의 공 폭발 / " + " / S:" + Section + " / P: " + P + " / tmpScore: " + tmpSCORE);
         SCORE = tmpSCORE;
     }
 

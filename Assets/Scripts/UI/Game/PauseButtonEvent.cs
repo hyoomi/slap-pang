@@ -8,7 +8,6 @@ public class PauseButtonEvent : BaseUI
     //일시멈춤 버튼의 텍스트와 Bool값
     [SerializeField] Text startPauseText;
 
-
     public void PauseBtn(GameObject go)
     {
         bool IsPauseActive = go.activeSelf;
@@ -16,6 +15,7 @@ public class PauseButtonEvent : BaseUI
         {
             SetTrue(go);
         }
+
         if (IsPauseActive)
         {
             Time.timeScale = 1;

@@ -4,7 +4,6 @@ using UnityEngine;
 
 // 모든 Manager를 포함하는 Managers. 
 // Manager를 사용하기위해 이 싱글톤 객체를 사용할 것.
-// ex) Managers.Sound.Play()
 public class Managers : MonoBehaviour
 {   
     static Managers s_instance; // 유일성이 보장된다

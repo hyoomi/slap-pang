@@ -1,4 +1,4 @@
-﻿// enum을 모아놓은 class. ex) Define.Scene
+﻿// enum을 모아놓은 class
 public class Define
 {
     public enum Scene

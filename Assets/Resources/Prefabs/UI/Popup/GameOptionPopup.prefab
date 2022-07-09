@@ -761,7 +761,6 @@ GameObject:
   - component: {fileID: 3735762363790886209}
   - component: {fileID: 2399868751397031795}
   - component: {fileID: 7061386598987708737}
-  - component: {fileID: 6544909121987136267}
   m_Layer: 5
   m_Name: TutorialButton
   m_TagString: Button
@@ -882,18 +881,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6544909121987136267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2833707739417197693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9eb7b930874722a44b270e961540cea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2878672568893615104
 GameObject:
   m_ObjectHideFlags: 0
