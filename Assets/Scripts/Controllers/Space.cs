@@ -135,7 +135,8 @@ public class Space : MonoBehaviour
     Vector2 firstPressPos;
     Vector2 secondPressPos;
     Vector2 currentSwipe;
-    const float swipeSpeed = 0.1f;
+    const float swipeSpeed = 1.5f;
+    bool updown;
 
     public void Swipe()
     {
@@ -158,23 +159,26 @@ public class Space : MonoBehaviour
                 //normalize the 2d vector
                 currentSwipe.Normalize();
 
+                //만약 y의 절댓값이 더 크면 위아래 스와이프로 인식
+                updown = Mathf.Abs(currentSwipe.y) > Mathf.Abs(currentSwipe.x);
+
                 //swipe upwards
-                if (currentSwipe.y > 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
+                if (updown && currentSwipe.y > 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Up);
                 }
                 //swipe down
-                if (currentSwipe.y < 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
+                else if (updown && currentSwipe.y < 0 && currentSwipe.x > -swipeSpeed && currentSwipe.x < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Down);
                 }
                 //swipe left
-                if (currentSwipe.x < 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
+                else if (currentSwipe.x < 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Left);
                 }
                 //swipe right
-                if (currentSwipe.x > 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
+                else if (currentSwipe.x > 0 && currentSwipe.y > -swipeSpeed && currentSwipe.y < swipeSpeed)
                 {
                     Managers.Action.SlideAction(Define.SlideDir.Right);
                 }
